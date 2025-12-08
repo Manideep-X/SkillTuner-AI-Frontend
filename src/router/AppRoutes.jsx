@@ -2,13 +2,15 @@ import { Route, Routes } from "react-router-dom"
 import Landing from "../pages/Landing"
 import Signin from "../pages/Signin"
 import Signup from "../pages/Signup"
-import MainLayout from "../layouts/MainLayout"
 import Dashboard from "../pages/Dashboard"
 import AnalysisResult from "../pages/AnalysisResult"
-import SettingsLayout from "../layouts/SettingsLayout"
+import NotFound from "../pages/NotFound"
 import Resumes from "../pages/Resumes"
 import UsernameChange from "../pages/UsernameChange"
 import PasswordChange from "../pages/PasswordChange"
+
+import MainLayout from "../layouts/MainLayout"
+import SettingsLayout from "../layouts/SettingsLayout"
 
 const AppRoutes = () => {
   return (
@@ -40,6 +42,10 @@ const AppRoutes = () => {
         {/* Password change section */}
         <Route path="password" element={<PasswordChange />} />
       </Route>
+
+      {/* Not Found page for not-found and wild card */}
+      <Route path="/not-found" element={<NotFound />} />
+      <Route path="*" element={<NotFound />} />
 
     </Routes>
   )
