@@ -1,17 +1,50 @@
 @import "tailwindcss";
 @plugin "daisyui";
+@plugin "daisyui/theme" {
+  name: "skilltunertheme";
+  default: true;
+  prefersdark: false;
+  color-scheme: dark;
 
-:root {
-  font-family: Helvetica, Roboto, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+  --color-base-100: "#1a1a1a";
+  --color-base-200: "#292929";
+  --color-base-300: "#1e1e1e";
+  --color-base-content: "#ffe8d2";
+  --color-primary: "#f2c08a";
+  --color-primary-content: "#150f08";
+  --color-secondary: "#d6b087";
+  --color-secondary-content: "#ffffff";
+  --color-accent: "#2d2d2d";
+  --color-accent-content: "#ffffff";
+  --color-neutral: "#2b2e2f";
+  --color-neutral-content: "#ccb6b2";
+  --color-info: "#5da1d6";
+  --color-info-content: "#002b3d";
+  --color-success: "#5fa378";
+  --color-success-content: "#002e1a";
+  --color-warning: "#d99a43";
+  --color-warning-content: "#002e1a";
+  --color-error: "#c44545";
+  --color-error-content: "#ffd9d9";
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  /* border radius */
+  --radius-selector: "0.5rem";
+  --radius-field: "0.2rem";
+  --radius-box: "0.2rem";
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* base sizes */
+  --size-selector: "0.2rem";
+  --size-field: "0.2rem";
+
+  /* border size */
+  --border: "1px";
+
+  /* effects */
+  --depth: "2";
+  --noise: "0";
+  
+}
+
+html {
+  font-family: "Plus Jakarta Sans", sans-serif;
 }
