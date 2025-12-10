@@ -11,6 +11,7 @@ import PasswordChange from "../pages/PasswordChange"
 
 import MainLayout from "../layouts/MainLayout"
 import SettingsLayout from "../layouts/SettingsLayout"
+import AuthLayout from "../layouts/AuthLayout"
 
 const AppRoutes = () => {
   return (
@@ -19,11 +20,13 @@ const AppRoutes = () => {
       {/* Landing page */}
       <Route path="" element={<Landing />} />
 
-      {/* Signin page */}
-      <Route path="/signin" element={<Signin />} />
-
-      {/* Signup page */}
-      <Route path="/signup" element={<Signup />} />
+      {/* Auth pages */}
+      <Route path="/" element={<AuthLayout />}>
+        {/* Signin page */}
+        <Route path="signin" element={<Signin />} />
+        {/* Signup page */}
+        <Route path="signup" element={<Signup />} />
+      </Route>
 
       {/* Main page (Auth required) */}
       <Route path="/user" element={<MainLayout />} >
