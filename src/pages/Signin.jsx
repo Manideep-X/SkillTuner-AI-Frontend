@@ -1,8 +1,31 @@
 import { Link } from "react-router-dom"
 import PasswordInput from "../components/authentication/PasswordInput"
 import EmailInput from "../components/authentication/EmailInput"
+import z from "zod"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+
+const SigninSchema = z.object({
+  email: z
+    .email("This is not a valid email!"),
+
+  password: z
+    .string()
+    .min(1, "Password can't be empty!")
+});
 
 const Signin = () => {
+
+  const { register, handleSubmit, formState: { errors, isValid, isDirty } } = useForm({
+    resolver: zodResolver(SigninSchema),
+    mode: "onChange",
+    defaultValues: { email: "", password: "" }
+  });
+
+  const onFormSubmit = (data) => {
+    console.log(data);
+  }
+
   return (
     <>
 
@@ -25,21 +48,33 @@ const Signin = () => {
 
       {/* Form field for sign in */}
       <div className="bg-base-200 flex items-center justify-center overflow-x-auto overflow-y-hidden rounded-r-sm">
-        <form action="#" method="post" className="fieldset w-md px-6">
+        <form onSubmit={handleSubmit(onFormSubmit)} method="post" className="fieldset w-md px-6">
           <fieldset className="fieldset rounded-box border-base-300">
             <legend className="fieldset-legend text-2xl font-bold">Sign In</legend>
 
             <label className="fieldset">
               <span className="label font-semibold text-neutral-content">Email</span>
-              <EmailInput />
+              <EmailInput
+                registerIO={register}
+                error={errors.email}
+              />
             </label>
 
             <label className="fieldset">
               <span className="label font-semibold text-neutral-content">Password</span>
-              <PasswordInput />
+              <PasswordInput
+                registerIO={register}
+                error={errors.password}
+              />
             </label>
 
-            <button className="btn btn-primary mt-4 shadow-none" type="submit">Sign In</button>
+            <button 
+              className="btn btn-primary mt-4 shadow-none" 
+              type="submit"
+              disabled={ !isValid || !isDirty }
+            >
+              Sign In
+            </button>
             <button className="btn btn-ghost mt-1" type="reset">Reset</button>
 
             <p className="text-center md:hidden">
