@@ -1,7 +1,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import z from "zod"
+import EmailInput from "../components/authentication/EmailInput";
+import PasswordInput from "../components/authentication/PasswordInput";
+import FirstAndLastNameInput from "../components/authentication/FirstAndLastNameInput";
+import { toast } from "sonner";
+import ApiClient from "../api/ApiClient";
+import ErrorHandling from "../utils/errors/ErrorHandling";
+import { ToastStyle } from "../utils/ToastStyle";
 
 const SignupSchema = z.object({
   firstName: z
@@ -17,7 +24,7 @@ const SignupSchema = z.object({
 
   password: z
     .string()
-    .min(8, "Must be atleast 8 characters long")
+    .min(6, "Must be atleast 6 characters long")
     .regex(/[a-z]/, "Must contain alteast one lower character")
     .regex(/[A-Z]/, "Must contain alteast one upper character")
     .regex(/\d/, "Must contain atleast one digit")
@@ -26,11 +33,47 @@ const SignupSchema = z.object({
 
 const Signup = () => {
 
-  const { register, handleSubmit, formState: { errors, isValid, isDirty } } = useForm({
+  const navigate = useNavigate();
+
+  const { register, handleSubmit, formState: { errors, isValid, isDirty, isSubmitting }, reset } = useForm({
     resolver: zodResolver(SignupSchema),
     mode: "onChange",
     defaultValues: { firstName: "", lastName: "", email: "", password: "" }
   });
+
+  const onFormSubmit = async (data) => {
+    try {
+      // Calling the specific api endpoint for signup
+      const { okay, status, message } = await ApiClient("auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      });
+      
+      if (!okay) {
+        // Error response handling
+        const result = ErrorHandling(status);
+        if (result.toast) {
+          result.toast == "error" ? 
+            toast.error(message, { toasterId: "global", style: ToastStyle.error }) :
+            toast.warning(message, { toasterId: "global", style: ToastStyle.warning });
+        }
+        if (result.action) {
+          navigate(result.action);
+        }
+      }
+      // For success response
+      else {
+        toast.success("You have successfully signed up!");
+        navigate("/user/home");
+      }
+
+    } catch (e) {
+      toast.error("Error occured while trying reaching the server! Try again", { toasterId: "global", style: ToastStyle.error });
+    }
+  }
 
   return (
     <>
@@ -43,9 +86,9 @@ const Signup = () => {
               <span className="inline bg-linear-to-b from-white via-white via-20% to-[#dea167] bg-clip-text text-transparent"> Tuning </span>
               Your
             </p>
-            <p className="text-2xl sm:text-3xl md:text-3xl font-extrabold">Career with AI</p>
+            <p className="text-2xl sm:text-3xl md:text-3xl font-extrabold">Career with AI.  </p>
           </div>
-          <p className="text-sm sm:text-lg md:text-lg md:font-semibold">Registered with your email</p>
+          <p className="text-sm sm:text-lg md:text-lg md:font-semibold">Register with your email ID</p>
           <p className="hidden md:block text-sm font-light mt-10">
             Already have an account? Then
             <Link to="/signin" className="link link-primary px-1">Sign in &#10532;</Link>
@@ -55,9 +98,18 @@ const Signup = () => {
 
       {/* Form field for sign in */}
       <div className="bg-base-200 flex items-center justify-center overflow-x-auto overflow-y-hidden rounded-r-sm">
-        <form onSubmit={handleSubmit(onFormSubmit)} method="post" className="fieldset w-md px-6">
+        <form onSubmit={handleSubmit(onFormSubmit)} className="fieldset w-md px-6">
           <fieldset className="fieldset rounded-box border-base-300">
-            <legend className="fieldset-legend text-2xl font-bold">Sign In</legend>
+            <legend className="fieldset-legend text-2xl font-bold">Sign Up</legend>
+
+            <label className="fieldset">
+              <span className="label font-semibold text-neutral-content">Full Name</span>
+              <FirstAndLastNameInput
+                registerIO={register}
+                errorFirst={errors.firstName?.message}
+                errorLast={errors.lastName?.message}
+              />
+            </label>
 
             <label className="fieldset">
               <span className="label font-semibold text-neutral-content">Email</span>
@@ -72,17 +124,23 @@ const Signup = () => {
               <PasswordInput
                 registerIO={register}
                 error={errors.password}
+                isSignup={true}
               />
             </label>
 
             <button 
               className="btn btn-primary mt-4 shadow-none" 
               type="submit"
-              disabled={ !isValid || !isDirty }
-            >
-              Sign In
-            </button>
-            <button className="btn btn-ghost mt-1" type="reset">Reset</button>
+              disabled={ !isValid || !isDirty || isSubmitting }
+            >{
+              isSubmitting
+              ? <div className="flex gap-2 w-full-h-full">
+                  <span className="loading loading-spinner loading-md text-primary opacity-30"></span>
+                  Signing Up...
+                </div>
+              : "Sign Up"
+            }</button>
+            <button className="btn btn-ghost mt-1" onClick={() => reset()} type="reset">Reset</button>
 
             <p className="text-center md:hidden">
               Already have an account? Then

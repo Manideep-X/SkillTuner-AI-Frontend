@@ -1,9 +1,13 @@
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import PasswordInput from "../components/authentication/PasswordInput"
 import EmailInput from "../components/authentication/EmailInput"
 import z from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { toast } from "sonner"
+import { ToastStyle } from "../utils/ToastStyle"
+import ApiClient from "../api/ApiClient"
+import ErrorHandling from "../utils/errors/ErrorHandling"
 
 const SigninSchema = z.object({
   email: z
@@ -16,14 +20,46 @@ const SigninSchema = z.object({
 
 const Signin = () => {
 
-  const { register, handleSubmit, formState: { errors, isValid, isDirty } } = useForm({
+  const { register, handleSubmit, formState: { errors, isValid, isDirty, isSubmitting }, reset } = useForm({
     resolver: zodResolver(SigninSchema),
     mode: "onChange",
     defaultValues: { email: "", password: "" }
   });
 
-  const onFormSubmit = (data) => {
-    console.log(data);
+  const navigate = useNavigate();
+
+  const onFormSubmit = async (data) => {
+    try {
+      // Calling the specific api endpoint for signup
+      const { okay, status, message } = await ApiClient("auth/signin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      });
+      
+      if (!okay) {
+        // Error response handling
+        const result = ErrorHandling(status);
+        if (result.toast) {
+          result.toast == "error" ? 
+            toast.error(message, { toasterId: "global", style: ToastStyle.error }) :
+            toast.warning(message, { toasterId: "global", style: ToastStyle.warning });
+        }
+        if (result.action) {
+          navigate(result.action);
+        }
+      }
+      // For success response
+      else {
+        toast.success("You have successfully signed in!");
+        navigate("/user/home");
+      }
+
+    } catch (e) {
+      toast.error("Can't reach the server! Try again", { toasterId: "global", style: ToastStyle.error });
+    }
   }
 
   return (
@@ -36,7 +72,7 @@ const Signin = () => {
             <p className="text-2xl sm:text-3xl md:text-3xl font-extrabold">Continue Your</p>
             <p className="text-2xl sm:text-3xl md:text-3xl font-extrabold">Career 
               <span className="inline bg-linear-to-b from-white via-white via-20% to-[#dea167] bg-clip-text text-transparent"> Tuning </span> 
-              Journey</p>
+              Journey.</p>
           </div>
           <p className="text-sm sm:text-lg md:text-lg md:font-semibold">Use your registered email</p>
           <p className="hidden md:block text-sm font-light mt-10">
@@ -48,7 +84,7 @@ const Signin = () => {
 
       {/* Form field for sign in */}
       <div className="bg-base-200 flex items-center justify-center overflow-x-auto overflow-y-hidden rounded-r-sm">
-        <form onSubmit={handleSubmit(onFormSubmit)} method="post" className="fieldset w-md px-6">
+        <form onSubmit={handleSubmit(onFormSubmit)} className="fieldset w-md px-6">
           <fieldset className="fieldset rounded-box border-base-300">
             <legend className="fieldset-legend text-2xl font-bold">Sign In</legend>
 
@@ -65,17 +101,23 @@ const Signin = () => {
               <PasswordInput
                 registerIO={register}
                 error={errors.password}
+                isSignup={false}
               />
             </label>
 
             <button 
               className="btn btn-primary mt-4 shadow-none" 
               type="submit"
-              disabled={ !isValid || !isDirty }
-            >
-              Sign In
-            </button>
-            <button className="btn btn-ghost mt-1" type="reset">Reset</button>
+              disabled={ !isValid || !isDirty || isSubmitting }
+            >{
+              isSubmitting
+              ? <div className="flex gap-2 w-full-h-full">
+                  <span className="loading loading-spinner loading-md text-primary opacity-30"></span>
+                  Signing In...
+                </div>
+              : "Sign In"
+            }</button>
+            <button className="btn btn-ghost mt-1" onClick={() => reset()} type="reset">Reset</button>
 
             <p className="text-center md:hidden">
               Don't have an account? 
