@@ -1,9 +1,9 @@
-const BACKEND_URL = import.meta.env.BACKEND_API_URL;
+const BACKEND_URL = import.meta.env.VITE_BACKEND_API_URL;
 
-const ApiClient = async (path, options= {}) => {
+const ApiClient = async (path, options = {}) => {
 
     // fetching response from the endpoint
-    const res = await fetch(`${BACKEND_URL}${path}`, {
+    const res = await fetch(`${BACKEND_URL}/${path}`, {
         credentials: "include",
         ...options
     })
@@ -21,8 +21,13 @@ const ApiClient = async (path, options= {}) => {
 
     // Return the data and the status code
     return {
+        okay: res.ok,
         status: res.status,
-        message: resData !== null ? resData : res.statusText
+        message: resData !== null 
+            ? 
+                (resData.message !== null ? resData.message : resData) 
+            : 
+                res.statusText
     };
 
 }
