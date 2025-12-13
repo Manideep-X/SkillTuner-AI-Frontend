@@ -7,9 +7,9 @@ const EmailInput = ({ registerIO, error }) => {
             <Mail className="h-[1em] opacity-50" />
             <input
               type="email"
-              {...registerIO('email')}
+              {...registerIO("email")}
               placeholder="mail@site.com"
-              required
+              title="Enter your email"
             />
         </label>
         { error && <div className="validator-hint">{error.message}</div> }

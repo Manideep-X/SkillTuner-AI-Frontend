@@ -1,7 +1,7 @@
 import { Eye, EyeClosed, KeyRound } from "lucide-react"
 import { useState } from "react";
 
-const PasswordInput = ({ registerIO, error }) => {
+const PasswordInput = ({ registerIO, error, isSignup }) => {
 
   const [revealPass, setRevealPass] = useState(false);
 
@@ -11,11 +11,12 @@ const PasswordInput = ({ registerIO, error }) => {
             <KeyRound className="h-[1em] opacity-50" />
             <input
                 type={revealPass ? "text" : "password"}
-                {...registerIO('password')}
-                required
+                {...registerIO("password")}
                 placeholder="Password"
-                minLength="6"
-                title="Must be more than 6 characters, including number, lowercase and uppercase letter, and special character"
+                {...(isSignup ?
+                    {title: "Must be more than 6 characters, including number, lower and uppercase letter, and special character"} :
+                    {title: "Enter your password"}
+                )}
             />
             <button type="button" onClick={() => setRevealPass(!revealPass)} className="btn btn-link btn-square">
                 {
