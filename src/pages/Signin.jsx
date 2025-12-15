@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom"
 import PasswordInput from "../components/authentication/PasswordInput"
 import EmailInput from "../components/authentication/EmailInput"
 import z from "zod"
-import { useForm } from "react-hook-form"
+import { FormProvider, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"
 import { ToastStyle } from "../utils/ToastStyle"
@@ -10,21 +10,21 @@ import ApiClient from "../api/ApiClient"
 import ErrorHandling from "../utils/errors/ErrorHandling"
 
 const SigninSchema = z.object({
-  email: z
-    .email("This is not a valid email!"),
+  
+  email: z.email("This is not a valid email!"),
+  password: z.string().min(1, "Password can't be empty!"),
 
-  password: z
-    .string()
-    .min(1, "Password can't be empty!")
 });
 
 const Signin = () => {
 
-  const { register, handleSubmit, formState: { errors, isValid, isDirty, isSubmitting }, reset } = useForm({
+  const methods = useForm({
     resolver: zodResolver(SigninSchema),
     mode: "onChange",
     defaultValues: { email: "", password: "" }
   });
+
+  const { handleSubmit, formState: { isValid, isDirty, isSubmitting }, reset } = methods;
 
   const navigate = useNavigate();
 
@@ -84,48 +84,43 @@ const Signin = () => {
 
       {/* Form field for sign in */}
       <div className="bg-base-200 flex items-center justify-center overflow-x-auto overflow-y-hidden rounded-r-sm">
-        <form onSubmit={handleSubmit(onFormSubmit)} className="fieldset w-md px-6">
-          <fieldset className="fieldset rounded-box border-base-300">
-            <legend className="fieldset-legend text-2xl font-bold">Sign In</legend>
+        <FormProvider {...methods} >
+          <form onSubmit={handleSubmit(onFormSubmit)} className="fieldset w-md px-6">
+            <fieldset className="fieldset rounded-box border-base-300">
+              <legend className="fieldset-legend text-2xl font-bold">Sign In</legend>
 
-            <label className="fieldset">
-              <span className="label font-semibold text-neutral-content">Email</span>
-              <EmailInput
-                registerIO={register}
-                error={errors.email}
-              />
-            </label>
+              <label className="fieldset">
+                <span className="label font-semibold text-neutral-content">Email</span>
+                <EmailInput />
+              </label>
 
-            <label className="fieldset">
-              <span className="label font-semibold text-neutral-content">Password</span>
-              <PasswordInput
-                registerIO={register}
-                error={errors.password}
-                isSignup={false}
-              />
-            </label>
+              <label className="fieldset">
+                <span className="label font-semibold text-neutral-content">Password</span>
+                <PasswordInput isSignup={false} />
+              </label>
 
-            <button 
-              className="btn btn-primary mt-4 shadow-none" 
-              type="submit"
-              disabled={ !isValid || !isDirty || isSubmitting }
-            >{
-              isSubmitting
-              ? <div className="flex gap-2 w-full-h-full">
-                  <span className="loading loading-spinner loading-md text-primary opacity-30"></span>
-                  Signing In...
-                </div>
-              : "Sign In"
-            }</button>
-            <button className="btn btn-ghost mt-1" onClick={() => reset()} type="reset">Reset</button>
+              <button 
+                className="btn btn-primary mt-4 shadow-none" 
+                type="submit"
+                disabled={ !isValid || !isDirty || isSubmitting }
+              >{
+                isSubmitting
+                ? <div className="flex gap-2 w-full-h-full">
+                    <span className="loading loading-dots loading-md text-accent-content opacity-40"></span>
+                    Signing In...
+                  </div>
+                : "Sign In"
+              }</button>
+              <button className="btn btn-ghost mt-1" onClick={() => reset()} type="reset">Reset</button>
 
-            <p className="text-center md:hidden">
-              Don't have an account? 
-              <Link to="/signup" className="link link-primary px-1">Sign up &#10532;</Link>
-              first
-            </p>
-          </fieldset>
-        </form>
+              <p className="text-center md:hidden">
+                Don't have an account? 
+                <Link to="/signup" className="link link-primary px-1">Sign up &#10532;</Link>
+                first
+              </p>
+            </fieldset>
+          </form>
+        </FormProvider>
       </div>
 
     </>
