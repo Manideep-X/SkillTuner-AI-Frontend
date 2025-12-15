@@ -1,17 +1,22 @@
 import { Eye, EyeClosed, KeyRound } from "lucide-react"
 import { useState } from "react";
+import { useFormContext } from "react-hook-form";
 
-const PasswordInput = ({ registerIO, error, isSignup }) => {
+const PasswordInput = ({ isSignup }) => {
 
   const [revealPass, setRevealPass] = useState(false);
 
+  const { register, formState: { errors, dirtyFields } } = useFormContext();
+
   return (
     <div>
-        <label className="input input-md h-10 validator w-full">
+        <label className={`input input-md h-10 w-full
+            ${errors.password ? 'input-error' : (dirtyFields.password ? 'input-success' : '')}
+        `}>
             <KeyRound className="h-[1em] opacity-50" />
             <input
                 type={revealPass ? "text" : "password"}
-                {...registerIO("password")}
+                {...register("password")}
                 placeholder="Password"
                 {...(isSignup ?
                     {title: "Must be more than 6 characters, including number, lower and uppercase letter, and special character"} :
@@ -26,7 +31,7 @@ const PasswordInput = ({ registerIO, error, isSignup }) => {
                 }
             </button>
         </label>
-        { error && <p className="validator-hint">{error.message}</p> }
+        { errors.password && <p className="text-error">{errors.password.message}</p> }
     </div>
   )
 }
