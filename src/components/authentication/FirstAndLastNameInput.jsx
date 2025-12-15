@@ -1,27 +1,36 @@
-const FirstAndLastNameInput = ({ registerIO, errorFirst, errorLast }) => {
+import { useFormContext } from "react-hook-form"
+
+const FirstAndLastNameInput = () => {
+
+  const { register, formState: { errors, dirtyFields } } = useFormContext();
+
   return (
     <div className="flex">
         <div className="w-1/2">
-            <label className="input input-md h-10 validator w-full">
+            <label className={`input input-md h-10 w-full
+              ${errors.firstName ? 'input-error' : (dirtyFields.firstName ? 'input-success' : '')}
+            `}>
                 <input
                   type="text"
-                  {...registerIO("firstName")}
+                  {...register("firstName")}
                   placeholder="First Name"
                   title="Enter your first name"
                 />
             </label>
-            { (errorFirst || console.log(errorFirst)) && <div className="validator-hint">{errorFirst}</div> }
+            { errors.firstName && <div className="text-error">{errors.firstName.message}</div> }
         </div>
         <div className="w-1/2">
-            <label className="input input-md h-10 validator w-full">
+            <label className={`input input-md h-10 w-full
+              ${errors.lastName ? 'input-error' : (dirtyFields.lastName ? 'input-success' : '')}
+            `}>
                 <input
                   type="text"
-                  {...registerIO("lastName")}
+                  {...register("lastName")}
                   placeholder="Last Name"
                   title="Enter your last name"
                 />
             </label>
-            { errorLast && <div className="validator-hint">{errorLast}</div> }
+            { errors.lastName && <div className="text-error">{errors.lastName.message}</div> }
         </div>
     </div>
   )
