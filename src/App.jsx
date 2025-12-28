@@ -1,5 +1,5 @@
 import { Toaster } from "sonner"
-import AppRoutes from "./router/AppRoutes"
+import AppRoutes from "./routes/AppRoutes"
 import { CircleCheck, CircleX, Info, TriangleAlert } from "lucide-react"
 
 function App() {
