@@ -26,3 +26,6 @@ dist-ssr
 # .env file
 .env
 prod.env
+
+# TLS private and public key created by local CA
+certs
