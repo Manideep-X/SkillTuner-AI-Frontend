@@ -13,6 +13,7 @@ import SettingsLayout from "../layouts/SettingsLayout"
 import AuthLayout from "../layouts/AuthLayout"
 import RoutesGuard from "./RoutesGuard"
 import DashboardLoading from "../components/layout/main/DashboardLoading"
+import AuthLoading from "../components/authentication/AuthLoading"
 
 const AppRoutes = () => {
   return (
@@ -67,7 +68,7 @@ const AppRoutes = () => {
       <Route path="*" element={<Navigate to="/" replace />} />
 
       {/* Testing */}
-      <Route path="/homeloading" element={<DashboardLoading />} />
+      <Route path="/authloading" element={<AuthLoading />} />
 
     </Routes>
   )
