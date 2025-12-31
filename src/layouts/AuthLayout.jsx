@@ -4,7 +4,7 @@ import logo from "../assets/logo.png"
 const AuthLayout = () => {
   return (
     <section className="relative flex h-screen justify-center items-center text-secondary-content
-                        bg-linear-to-b from-transparent via-transparent via-70% to-[#f2c08a21]
+                        bg-linear-to-b from-black/80 via-transparent via-50% to-accent/25
                         ">
 
       {/* SkillTuner AI logo */}
