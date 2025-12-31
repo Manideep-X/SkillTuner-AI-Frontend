@@ -23,11 +23,10 @@ const ApiClient = async (path, options = {}) => {
     return {
         okay: res.ok,
         status: res.status,
-        message: resData !== null 
-            ? 
-                (resData.message !== null ? resData.message : resData) 
-            : 
-                res.statusText
+        resData: resData,
+        message: resData?.message ?? res?.statusText
+        // Note: ||(logical OR): returns RHS if the LHS have any falsy value('', false, null, undefined, NaN)
+        //       ??(Nullish coalescing): returns RHS if the LHS value is either null or undefined
     };
 
 }
