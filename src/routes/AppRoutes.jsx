@@ -68,7 +68,7 @@ const AppRoutes = () => {
       <Route path="*" element={<Navigate to="/" replace />} />
 
       {/* Testing */}
-      <Route path="/authloading" element={<AuthLoading />} />
+      <Route path="/testhome" element={<MainLayout />} />
 
     </Routes>
   )
