@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import ApiClient from "../api/ApiClient";
 import ErrorHandling from "../utils/errors/ErrorHandling";
 import { ToastStyle } from "../utils/ToastStyle";
+import { ApiEndpointExtensions } from "../api/ApiEndpointExtensions";
 
 const SignupSchema = z.object({
   firstName: z.string().min(1, "First name can't be empty!"),
@@ -41,7 +42,7 @@ const Signup = () => {
   const onFormSubmit = async (data) => {
     try {
       // Calling the specific api endpoint for signup
-      const { okay, status, message } = await ApiClient("auth/signup", {
+      const { okay, status, message } = await ApiClient(ApiEndpointExtensions.singup, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -63,8 +64,8 @@ const Signup = () => {
       }
       // For success response
       else {
-        toast.success("You have successfully signed up!");
-        navigate("/user/home");
+        toast.success("You have successfully created an account!");
+        navigate("/signin");
       }
 
     } catch (e) {
@@ -94,7 +95,7 @@ const Signup = () => {
       </div>
 
       {/* Form field for sign in */}
-      <div className="bg-base-200 flex items-center justify-center overflow-x-auto overflow-y-hidden rounded-r-sm">
+      <div className="bg-[#212121] flex items-center justify-center overflow-x-auto overflow-y-hidden rounded-r-sm">
         <FormProvider {...methods} >
           <form onSubmit={handleSubmit(onFormSubmit)} className="fieldset w-md px-6">
             <fieldset className="fieldset rounded-box border-base-300">
