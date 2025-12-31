@@ -1,8 +1,9 @@
 import React from 'react'
+import { Outlet } from 'react-router-dom'
 
 const SettingsLayout = () => {
   return (
-    <div>SettingsLayout</div>
+    <div>SettingsLayout <Outlet /> </div>
   )
 }
 

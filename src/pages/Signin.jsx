@@ -8,6 +8,8 @@ import { toast } from "sonner"
 import { ToastStyle } from "../utils/ToastStyle"
 import ApiClient from "../api/ApiClient"
 import ErrorHandling from "../utils/errors/ErrorHandling"
+import { useAuth } from "../contexts/AuthContext"
+import { ApiEndpointExtensions } from "../api/ApiEndpointExtensions"
 
 const SigninSchema = z.object({
   
@@ -23,15 +25,15 @@ const Signin = () => {
     mode: "onChange",
     defaultValues: { email: "", password: "" }
   });
-
   const { handleSubmit, formState: { isValid, isDirty, isSubmitting }, reset } = methods;
 
   const navigate = useNavigate();
+  const { signout, signin,  } = useAuth();
 
   const onFormSubmit = async (data) => {
     try {
       // Calling the specific api endpoint for signup
-      const { okay, status, message } = await ApiClient("auth/signin", {
+      const { okay, status, resData, message } = await ApiClient(ApiEndpointExtensions.signin, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -41,7 +43,7 @@ const Signin = () => {
       
       if (!okay) {
         // Error response handling
-        const result = ErrorHandling(status);
+        const result = ErrorHandling(status, signout);
         if (result.toast) {
           result.toast == "error" ? 
             toast.error(message, { toasterId: "global", style: ToastStyle.error }) :
@@ -53,8 +55,8 @@ const Signin = () => {
       }
       // For success response
       else {
+        signin(resData);
         toast.success("You have successfully signed in!");
-        navigate("/user/home");
       }
 
     } catch (e) {
@@ -83,7 +85,7 @@ const Signin = () => {
       </div>
 
       {/* Form field for sign in */}
-      <div className="bg-base-200 flex items-center justify-center overflow-x-auto overflow-y-hidden rounded-r-sm">
+      <div className="bg-[#212121] flex items-center justify-center overflow-x-auto overflow-y-hidden rounded-r-sm">
         <FormProvider {...methods} >
           <form onSubmit={handleSubmit(onFormSubmit)} className="fieldset w-md px-6">
             <fieldset className="fieldset rounded-box border-base-300">
