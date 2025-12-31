@@ -1,10 +1,12 @@
-import { createContext, useContext, useState } from "react"
+import { createContext, useContext, useEffect, useState } from "react"
 import ApiClient from "../api/ApiClient";
+import { ApiEndpointExtensions } from "../api/ApiEndpointExtensions";
 
 const AuthContext = createContext(null);
 
 export const AuthContextProvider = ({ children }) => {
 
+    // auth status can be either null(initial), "loading", "authenticated", or "unauthenticated"
     const [authStatus, setAuthStatus] = useState(null);
     const [userDetails, setUserDetails] = useState(null);
 
@@ -18,37 +20,45 @@ export const AuthContextProvider = ({ children }) => {
         setAuthStatus("loading");
         // If the user is not authenticated or null then the backend needed to be checked.
         try {
-            const { okay, message } = await ApiClient("user/details", {});
+            const { okay, resData } = await ApiClient(ApiEndpointExtensions.userDetails, {});
 
             if (okay) {
-                setUserDetails(message);
+                setUserDetails(resData);
                 setAuthStatus("authenticated");
-                return true;
             } else {
                 setUserDetails(null);
                 setAuthStatus("unauthenticated");
-                return false;
             }
         // If there is error while fetching then the status will be set to unauthenticated.
         } catch {
             setUserDetails(null);
             setAuthStatus("unauthenticated");
-            return false;
         }
 
     }
+
+    useEffect(() => {
+      if (authStatus === null) {
+        checkStatusAndFetch();
+      }
+    }, [authStatus]);
 
     const signout = () => {
         setUserDetails(null);
         setAuthStatus("unauthenticated");
     }
 
+    const signin = (userData) => {
+        setUserDetails(userData);
+        setAuthStatus("authenticated");
+    }
+
     return (
-        <AuthContext.Provider value={{ authStatus, userDetails, checkStatusAndFetch, signout }} >
+        <AuthContext.Provider value={{ authStatus, userDetails, signout, signin }} >
             {children}
         </AuthContext.Provider>
     );
 
 }
 
-export const useAuth = useContext(AuthContext);
+export const useAuth = () => useContext(AuthContext);
