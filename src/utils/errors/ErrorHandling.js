@@ -1,5 +1,5 @@
 // Handles error status codes and returns the operation and action needed to be performed
-const ErrorHandling = (status) => {
+const ErrorHandling = (status, signout) => {
 
     let result = { toast: null, action: null };
 
@@ -8,12 +8,14 @@ const ErrorHandling = (status) => {
     
     if (status >= 400) {
         if (status === 401 || status === 403) {
+            if (status === 401)
+                signout(); // For expired/empty JWT token
             result.toast = "error";
             result.action = "/signin";
         }
         else if (status === 404) {
             result.toast = "warning";
-            result.action = "/not-found";
+            result.action = "/user/home";
         }
         return result;
     }
