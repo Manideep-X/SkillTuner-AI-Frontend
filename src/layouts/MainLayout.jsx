@@ -38,7 +38,7 @@ const MainLayout = () => {
 
       </div>
 
-      <SidebarNav isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
+      <SidebarNav isOpen={isSidebarOpen} />
 
     </section>
   )
