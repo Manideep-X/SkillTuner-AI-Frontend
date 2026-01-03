@@ -20,6 +20,7 @@ const ListOfAnalyses = () => {
 
     try {
       const { okay, status, resData, message } = await ApiClient(ApiEndpointExtensions.listOfAnalyses, {});
+      console.log(resData);
   
       if (!okay) {
         const result = ErrorHandling(status, signout);
@@ -44,19 +45,21 @@ const ListOfAnalyses = () => {
   
   useEffect(() => {
     getList();
-  }, [listOfResults]);
+  }, []);
 
   if (isLoading) {
     return <ListOfAnalysesLoading />
   }
   
   return (
-    <section className="w-full hover:cursor-auto hover:bg-inherit hover:text-inherit">
-      <ul className="menu w-full grow">
+    <section className="w-full hover:cursor-auto hover:bg-inherit hover:text-inherit p-0">
+      <ul className={`menu w-full grow m-0 ${listOfResults.length === 0 && 'hidden'} `}>
         {
-          listOfResults.forEach(result => {
-            
-          });
+          listOfResults.map(result => (
+            <li key={result?.jdId} id={result?.jdId}>
+              {JSON.stringify(result)}
+            </li>
+          ))
         }
       </ul>
     </section>
