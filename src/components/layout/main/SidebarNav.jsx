@@ -1,4 +1,4 @@
-import { ChevronsDownUp, ChevronsUpDown, Cog, House, LogOut, Mail, Sparkles, User } from "lucide-react"
+import { ChevronsDownUp, ChevronsUpDown, Cog, FolderTree, House, LogOut, Mail, Sparkles, User } from "lucide-react"
 import logo from "../../../assets/logo.png"
 import { useState } from "react";
 import { useAuth } from "../../../contexts/AuthContext";
@@ -122,10 +122,16 @@ const SidebarNav = ({ isOpen }) => {
                 <li></li>
 
                 {/* List of Analysed results */}
-                <li 
-                    className="is-drawer-close:hidden"
-                >
-                    <ListOfAnalyses />
+                <li>
+                    <div className="flex flex-col gap-0 is-drawer-open:hover:bg-inherit is-drawer-open:hover:cursor-auto is-drawer-open:hover:text-inherit is-drawer-close:tooltip is-drawer-close:tooltip-right py-2 is-drawer-open:pl-0" data-tip="Analyses List">
+                        <label htmlFor="my-drawer-4" aria-label="close sidebar">
+                            <FolderTree className="is-drawer-open:hidden border rounded-sm border-accent p-1 size-8 text-primary" />
+                        </label>
+                        <span className="w-full is-drawer-close:hidden text-primary text-left font-semibold">Analyses List</span>
+                        <div className="is-drawer-close:hidden w-full">
+                            <ListOfAnalyses />
+                        </div>
+                    </div>
                 </li>
 
             </ul>
