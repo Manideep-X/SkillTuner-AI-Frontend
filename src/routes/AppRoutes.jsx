@@ -45,7 +45,7 @@ const AppRoutes = () => {
           {/* Dashboard section */}
           <Route path="home" element={<Dashboard />} />
           {/* Analysis result section */}
-          <Route path="analysis-results/:id" element={<AnalysisResult />} />
+          <Route path="analysis/:resumeId/:jdId" element={<AnalysisResult />} />
           {/* For other paths in /user */}
           <Route path="*" element={<Navigate to="home" replace />} />
         </Route>
