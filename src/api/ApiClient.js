@@ -19,12 +19,23 @@ const ApiClient = async (path, options = {}) => {
         }
     }
 
+    const resMessage = 
+        res.status === 400 ? "401: Bad request!" :
+        res.status === 401 ? "401: Unauthorized request!" :
+        res.status === 403 ? "403: Forbidden request!" :
+        res.status === 404 ? "404: Not found!" :
+        res.status === 406 ? "406: Not acceptable request!" :
+        res.status === 409 ? "409: Conflicting request!" :
+        res.status === 429 ? "429: Too many requests!" :
+        res.status >= 500 ? "500: Internal server error!" :
+        `${res.status}: Something went wrong!`;
+
     // Return the data and the status code
     return {
         okay: res.ok,
         status: res.status,
         resData: resData,
-        message: resData?.message ?? res?.statusText
+        message: resData?.message ?? resMessage
         // Note: ||(logical OR): returns RHS if the LHS have any falsy value('', false, null, undefined, NaN)
         //       ??(Nullish coalescing): returns RHS if the LHS value is either null or undefined
     };
