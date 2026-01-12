@@ -1,7 +1,9 @@
 const ApiEndpointExtensions = {
     signin: "auth/signin",
-    singup: "auth/signup",
+    signup: "auth/signup",
+    signout: "user/signout",
     userDetails: "user/details",
+    listOfResumes: "resumes",
     listOfAnalyses: "resumes/job-descriptions"
 }
 

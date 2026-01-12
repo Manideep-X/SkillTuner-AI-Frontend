@@ -1,6 +1,9 @@
 import { Toaster } from "sonner"
 import AppRoutes from "./routes/AppRoutes"
 import { CircleCheck, CircleX, Info, TriangleAlert } from "lucide-react"
+import SettingsLayout from "./layouts/SettingsLayout"
+import AnalysisFormDialog from "./components/analysis result/AnalysisFormDialog"
+import JobDescriptionDialog from "./components/job description/JobDescriptionDialog"
 
 function App() {
 
@@ -50,6 +53,9 @@ function App() {
         }}
       />
       <AppRoutes />
+      <SettingsLayout />
+      <AnalysisFormDialog />
+      <JobDescriptionDialog />
     </>
   )
 }

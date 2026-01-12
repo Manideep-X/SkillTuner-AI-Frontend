@@ -12,8 +12,6 @@ import MainLayout from "../layouts/MainLayout"
 import SettingsLayout from "../layouts/SettingsLayout"
 import AuthLayout from "../layouts/AuthLayout"
 import RoutesGuard from "./RoutesGuard"
-import DashboardLoading from "../components/layout/main/DashboardLoading"
-import AuthLoading from "../components/authentication/AuthLoading"
 
 const AppRoutes = () => {
   return (
@@ -42,24 +40,12 @@ const AppRoutes = () => {
         
         {/* Main page (Auth required) */}
         <Route path="/user" element={<MainLayout />}>
+          {/* Default route for the path /user */}
+          <Route index element={<Navigate to="home" replace />} />
           {/* Dashboard section */}
           <Route path="home" element={<Dashboard />} />
           {/* Analysis result section */}
           <Route path="analysis/:resumeId/:jdId" element={<AnalysisResult />} />
-          {/* For other paths in /user */}
-          <Route path="*" element={<Navigate to="home" replace />} />
-        </Route>
-
-        {/* Settings page (Auth required) */}
-        <Route path="/settings" element={<SettingsLayout />}>
-          {/* Add resumes section */}
-          <Route path="resumes" element={<Resumes />} />
-          {/* Username change section */}
-          <Route path="user-name" element={<UsernameChange />} />
-          {/* Password change section */}
-          <Route path="password" element={<PasswordChange />} />
-          {/* For other paths in /settings */}
-          <Route path="*" element={<Navigate to="resumes" replace />} />
         </Route>
         
       </Route>
