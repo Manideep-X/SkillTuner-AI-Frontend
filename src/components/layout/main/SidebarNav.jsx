@@ -3,11 +3,18 @@ import logo from "../../../assets/logo.png"
 import { useState } from "react";
 import { useAuth } from "../../../contexts/AuthContext";
 import ListOfAnalyses from "../../../pages/ListOfAnalyses";
+import { NavLink, useNavigate } from "react-router-dom";
 
 const SidebarNav = ({ isOpen }) => {
 
     const [isMoreOpen, setIsMoreOpen] = useState(false);
     const { userDetails, signout } = useAuth();
+    const navigate = useNavigate();
+
+    const handleSignout = async () => {
+        await signout();
+        navigate("/signin");
+    }
 
   return (
     <div className="drawer-side is-drawer-close:overflow-visible">
@@ -77,15 +84,11 @@ const SidebarNav = ({ isOpen }) => {
                                         <p className="truncate max-w-56">{userDetails?.email}</p>
                                     </div>                        
                                 </li>
-                                <li 
-                                    className=""
-                                    onClick={() => signout()}
-                                >
+                                <li onClick={handleSignout}>
                                     <div className="flex gap-1 btn btn-outline btn-error shadow-none">
                                         <LogOut className="size-5" />
                                         Signout
                                     </div>
-                                        
                                 </li>
                             </ul>
                         }
@@ -103,16 +106,20 @@ const SidebarNav = ({ isOpen }) => {
 
                 {/* Dashboard navigation option */}
                 <li>
-                    <button className="is-drawer-close:tooltip is-drawer-close:tooltip-right py-2" data-tip="Dashboard">
+                    <NavLink to="/user/home" className="is-drawer-close:tooltip is-drawer-close:tooltip-right py-2" data-tip="Dashboard">
                         {/* Dashboard icon */}
                         <House className="ml-1 text-accent" />
                         <span className="is-drawer-close:hidden text-white">Dashboard</span>
-                    </button>
+                    </NavLink>
                 </li>
 
                 {/* Settings option */}
                 <li>
-                    <button className="is-drawer-close:tooltip is-drawer-close:tooltip-right py-2" data-tip="Settings">
+                    <button 
+                        className="is-drawer-close:tooltip is-drawer-close:tooltip-right py-2" 
+                        data-tip="Settings"
+                        onClick={() => document.getElementById('settingsModal').showModal()}
+                    >
                         {/* Settings icon */}
                         <Cog className="ml-1 text-accent" />
                         <span className="is-drawer-close:hidden text-white">Settings</span>
@@ -123,7 +130,7 @@ const SidebarNav = ({ isOpen }) => {
 
                 {/* List of Analysed results */}
                 <li>
-                    <div className="flex flex-col gap-0 is-drawer-open:hover:bg-inherit is-drawer-open:hover:cursor-auto is-drawer-open:hover:text-inherit is-drawer-close:tooltip is-drawer-close:tooltip-right py-2 is-drawer-open:pl-0" data-tip="Analyses List">
+                    <div className="flex flex-col gap-0 is-drawer-open:hover:cursor-auto is-drawer-close:hover:cursor-pointer is-drawer-open:hover:text-inherit is-drawer-close:tooltip is-drawer-close:tooltip-right py-2 is-drawer-open:pl-0 is-drawer-open:active:bg-inherit is-drawer-open:active:text-inherit is-drawer-open:focus-visible:bg-inherit is-drawer-open:hover:bg-inherit" data-tip="Analyses List">
                         <label htmlFor="my-drawer-4" aria-label="close sidebar">
                             <FolderTree className="is-drawer-open:hidden border rounded-sm border-accent p-1 size-8 text-primary" />
                         </label>
