@@ -6,6 +6,7 @@ import { PanelRightClose, PanelRightOpen } from "lucide-react";
 const MainLayout = () => {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [title, setTitle] = useState("");
 
   return (
     <section className="drawer lg:drawer-open">
@@ -17,8 +18,8 @@ const MainLayout = () => {
         checked={isSidebarOpen}
         onChange={() => setIsSidebarOpen(!isSidebarOpen)}
       />
-      <div className="drawer-content">
-        <nav className="navbar w-full bg-base-300">
+      <div className="drawer-content w-full">
+        <nav className="navbar bg-base-300">
           <label htmlFor="my-drawer-4" aria-label="open sidebar" className="btn btn-square btn-ghost">
             {/* Sidebar toggle icon */}
             {
@@ -27,13 +28,13 @@ const MainLayout = () => {
               : <PanelRightClose />
             }
           </label>
-          <div className="px-4">Title</div>
+          <div className="px-4">{ title }</div>
         </nav>
 
         {/* Other pages will be displayed here */}
-        <div>
+        <div className="overflow-x-hidden overflow-y-auto grow">
           MainLayout all components
-          <Outlet />
+          <Outlet context={{ setTitle }} />
         </div>
 
       </div>
