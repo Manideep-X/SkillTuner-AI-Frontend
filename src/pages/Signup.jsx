@@ -42,7 +42,7 @@ const Signup = () => {
   const onFormSubmit = async (data) => {
     try {
       // Calling the specific api endpoint for signup
-      const { okay, status, message } = await ApiClient(ApiEndpointExtensions.singup, {
+      const { okay, status, message } = await ApiClient(ApiEndpointExtensions.signup, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
