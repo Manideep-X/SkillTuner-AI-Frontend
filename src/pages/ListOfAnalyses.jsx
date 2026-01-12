@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom"
 import ListOfAnalysesLoading from "../components/layout/main/ListOfAnalysesLoading"
 import { toast } from "sonner"
 import { ToastStyle } from "../utils/ToastStyle"
-import { Building2, CircleFadingArrowUp, EllipsisVertical, FileUser } from "lucide-react"
+import { Building2, CircleFadingArrowUp, EllipsisVertical, FileUser, Trash2 } from "lucide-react"
 
 const ListOfAnalyses = () => {
   
@@ -73,7 +73,7 @@ const ListOfAnalyses = () => {
                 navigate(`/user/analysis/${result.resumeId}/${result.jdId}`);
               }}
             >
-              <div className="flex items-center justify-between pl-2">
+              <div className="flex items-center justify-between pl-2 overflow-visible">
                 <div>
                   <div className="flex gap-1 w-full items-center">
                     {
@@ -101,7 +101,26 @@ const ListOfAnalyses = () => {
                     </span>
                   </div>
                 </div>
-                <EllipsisVertical className="size-8 p-1 rounded-full shadow-none btn btn-soft btn-primary" />
+                
+                {/* more option and delete pop-up menu */}
+                <div onClick={(e) => e.stopPropagation()} className="relative">
+                  <div className="dropdown dropdown-left dropdown-center">
+                    <button tabIndex={0} role="button" className="size-8 p-1 rounded-full shadow-none btn btn-soft btn-primary">
+                      <EllipsisVertical />
+                    </button>
+                    <ul tabIndex={0} className="dropdown-content menu absolute z-50 bg-base-100 rounded-box w-52 p-2 shadow-sm">
+                      <li>
+                        <button type="button" className="flex gap-2">
+                          <Trash2 className="p-0.5 text-error" />
+                          <p className="truncate">
+                            Delete
+                          </p>
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
               </div>
             </li>
           ))

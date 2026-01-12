@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom"
+import { useNavigate, useOutletContext, useParams } from "react-router-dom"
 import AnalysisResultLoading from "../components/analysis result/AnalysisResultLoading"
 import ApiClient from "../api/ApiClient";
 import ErrorHandling from "../utils/errors/ErrorHandling";
@@ -15,6 +15,7 @@ const AnalysisResult = () => {
   const [isLoading, setIsLoading] = useState({ resume: true, jobDescription: true, result: true });
   const { signout } = useAuth();
   const hasNavigated = useRef(false);
+  const { setTitle } = useOutletContext();
 
   const getResume = async () => {
     if (hasNavigated.current) return;
@@ -96,13 +97,21 @@ const AnalysisResult = () => {
     getJobDescription();
     getAnalysisResult();
   }, [resumeId, jdId]);
+  
+  useEffect(() => {
+    if (analysedData?.jobTitle) 
+      setTitle(analysedData.jobTitle);
+    return () => {
+      setTitle("");
+    }
+  }, [analysedData?.jobTitle, setTitle]);
 
   if (isLoading.jobDescription || isLoading.resume || isLoading.result) {
     return <AnalysisResultLoading />
   }
 
   return (
-    <div>{JSON.stringify(analysedData)}</div>
+    <section className="">{JSON.stringify(analysedData)}</section>
   )
 }
 
