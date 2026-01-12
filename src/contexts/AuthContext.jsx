@@ -1,6 +1,8 @@
 import { createContext, useContext, useEffect, useState } from "react"
 import ApiClient from "../api/ApiClient";
 import { ApiEndpointExtensions } from "../api/ApiEndpointExtensions";
+import { toast } from "sonner";
+import { ToastStyle } from "../utils/ToastStyle";
 
 const AuthContext = createContext(null);
 
@@ -43,9 +45,19 @@ export const AuthContextProvider = ({ children }) => {
       }
     }, [authStatus]);
 
-    const signout = () => {
-        setUserDetails(null);
-        setAuthStatus("unauthenticated");
+    const signout = async () => {
+        if (authStatus !== "authenticated") return;
+        try {
+            await ApiClient(ApiEndpointExtensions.signout, {
+                method: "POST"
+            });
+            toast.success("Successfully signed out!", { toasterId: "global", style: ToastStyle.success });
+        } catch (e) {
+            toast.error(`Error occured while signing out!`);
+        } finally {
+            setUserDetails(null);
+            setAuthStatus("unauthenticated");
+        }
     }
 
     const signin = (userData) => {
