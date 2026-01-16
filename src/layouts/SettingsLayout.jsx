@@ -3,12 +3,15 @@ import { SettingPaths } from "../utils/SettingPaths"
 import Resumes from "../pages/Resumes"
 import UsernameChange from "../pages/UsernameChange"
 import PasswordChange from "../pages/PasswordChange"
-import { ChevronRight, CircleX } from "lucide-react";
+import SessionSignout from "../pages/SessionSignout"
+import { AlarmClock, ChevronRight, FilePenLine, ShieldEllipsis, UserPen, X } from "lucide-react";
+import { useLocation } from "react-router-dom";
 
 const SettingsLayout = () => {
 
   const [activePage, setActivePage] = useState(null); // null means modal is closed
   const dialogRef = useRef(null);
+  const location = useLocation();
 
   // Hash changes
   const handleHash = () => {
@@ -23,7 +26,7 @@ const SettingsLayout = () => {
     }
 
     // Settings default hash as resumes
-    if (hash !== "#settings" || hash !== "#settings/") {
+    if (hash === "#settings" || hash === "#settings/") {
       window.location.hash = "#settings/resumes";
       return;
     }
@@ -64,23 +67,73 @@ const SettingsLayout = () => {
     }
   }, []);
 
+  // Modal forcibly closed when react navigates
+  useEffect(() => {
+    const modal = dialogRef.current;
+    if(!modal) return;
+
+    if (location.pathname === "/signin" || location.pathname === "/signup" || location.pathname === "/") {
+      setActivePage(null);
+      if (modal?.open) 
+        modal.close();
+      window.location.hash = "";
+    }
+  }, [location.pathname]);
+
   return (
-    <dialog id="settingsModal" ref={dialogRef} className="modal modal-bottom sm:modal-middle">
-      <div className="modal-box">
-        <h3 className="font-bold text-lg">Settings <ChevronRight /> {activePage} </h3>
-        <div className="py-4">
-          <nav className="menu flex sm:flex-col flex-row">
-            <a href="#settings/resumes">Resumes</a>
-            <a href="#settings/user-name">Update Name</a>
-            <a href="#settings/password">Update Password</a>
-          </nav>
-          { activePage === "resume" && <Resumes /> }
-          { activePage === "user-name" && <UsernameChange /> }
-          { activePage === "password" && <PasswordChange /> }
+    <dialog id="settingsModal" ref={dialogRef} className="modal modal-bottom sm:modal-middle backdrop-blur-[2px]">
+      <div className="modal-box p-0 sm:rounded-lg rounded-t-2xl w-full sm:w-11/12 md:w-196 max-w-5xl overflow-y-hidden">
+        <h3 className="flex items-center sm:text-2xl text-xl font-bold text-white px-6 py-6">
+          Settings
+          <ChevronRight />
+          {
+            activePage === "resumes" 
+              ? "Resumes" 
+              : (activePage === "user-name" 
+                  ? "User Name" 
+                  : (activePage === "password" ? "Password" : "Session")
+                )
+          }
+        </h3>
+        <div className="flex sm:flex-row flex-col m-0 p-0 w-full">
+          <div className="bg-base-300/40 sm:w-fit w-full">
+            <nav className="menu flex sm:flex-col flex-row sm:w-fit w-full sm:justify-start justify-center sm:gap-2 gap-1">
+              <a href="#settings/resumes" className={`flex sm:gap-1.5 gap-1 sm:px-3 px-2 py-2 items-center font-semibold rounded-sm hover:bg-base-content/15 transition-all border-base-content/20 border sm:border-none ${activePage === "resumes" ? "bg-base-content/15" : ""} `}>
+                <FilePenLine className="text-accent size-5" />
+                <p className="truncate sm:w-36 w-32">
+                  Resumes
+                </p>
+              </a>
+              <a href="#settings/user-name" className={`flex sm:gap-1.5 gap-1 sm:px-3 px-2 py-2 items-center font-semibold rounded-sm hover:bg-base-content/15 transition-all border-base-content/20 border sm:border-none ${activePage === "user-name" ? "bg-base-content/15" : ""} `}>
+                <UserPen className="text-accent size-5" />
+                <p className="truncate sm:w-36 w-32">
+                  Update Name
+                </p>
+              </a>
+              <a href="#settings/password" className={`flex sm:gap-1.5 gap-1 sm:px-3 px-2 py-2 items-center font-semibold rounded-sm hover:bg-base-content/15 transition-all border-base-content/20 border sm:border-none ${activePage === "password" ? "bg-base-content/15" : ""} `}>
+                <ShieldEllipsis className="text-accent size-5" />
+                <p className="truncate sm:w-36 w-32">
+                  Update Password
+                </p>
+              </a>
+              <a href="#settings/session" className={`flex sm:gap-1.5 gap-1 sm:px-3 px-2 py-2 items-center font-semibold rounded-sm hover:bg-base-content/15 transition-all border-base-content/20 border sm:border-none ${activePage === "session" ? "bg-base-content/15" : ""} `}>
+                <AlarmClock className="text-accent size-5" />
+                <p className="truncate sm:w-36 w-32">
+                  Session
+                </p>
+              </a>
+            </nav>
+          </div>
+          <div className="grow h-130 overflow-y-auto bg-base-content/2">
+            { activePage === "resumes" && <Resumes /> }
+            { activePage === "user-name" && <UsernameChange /> }
+            { activePage === "password" && <PasswordChange /> }
+            { activePage === "session" && <SessionSignout /> }
+          </div>
         </div>
-        <div className="modal-action">
-          <button onClick={closeModal} className="btn">
-            <CircleX />
+        <div className="modal-action m-0">
+          <button onClick={closeModal} className="btn btn-sm btn-circle btn-ghost size-8 absolute right-5 top-6.5 font-bold text-white">
+            <X />
           </button>
         </div>
       </div>
