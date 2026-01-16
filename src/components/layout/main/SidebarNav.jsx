@@ -118,7 +118,7 @@ const SidebarNav = ({ isOpen }) => {
                     <button 
                         className="is-drawer-close:tooltip is-drawer-close:tooltip-right py-2" 
                         data-tip="Settings"
-                        onClick={() => document.getElementById('settingsModal').showModal()}
+                        onClick={() => window.location.hash = "#settings/resumes"}
                     >
                         {/* Settings icon */}
                         <Cog className="ml-1 text-accent" />
