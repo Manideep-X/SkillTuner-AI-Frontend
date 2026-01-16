@@ -32,7 +32,9 @@ export const AuthContextProvider = ({ children }) => {
                 setAuthStatus("unauthenticated");
             }
         // If there is error while fetching then the status will be set to unauthenticated.
-        } catch {
+        } catch (err) {
+            if (err instanceof TypeError)
+                toast.error("You are offline!", { toasterId: "closable", style: ToastStyle.error, description: "Please check your connection and then refresh this page" });
             setUserDetails(null);
             setAuthStatus("unauthenticated");
         }
@@ -53,7 +55,7 @@ export const AuthContextProvider = ({ children }) => {
             });
             toast.success("Successfully signed out!", { toasterId: "global", style: ToastStyle.success });
         } catch (e) {
-            toast.error(`Error occured while signing out!`);
+            toast.error(`Error occured while signing out!`, { toasterId: "global", style: ToastStyle.error });
         } finally {
             setUserDetails(null);
             setAuthStatus("unauthenticated");
