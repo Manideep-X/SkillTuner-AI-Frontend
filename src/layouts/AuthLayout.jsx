@@ -1,5 +1,6 @@
 import { Link, Outlet } from "react-router-dom"
 import logo from "../assets/logo.png"
+import { Sparkles } from "lucide-react"
 
 const AuthLayout = () => {
   return (
@@ -11,7 +12,13 @@ const AuthLayout = () => {
       <div className="absolute top-0 left-0 flex p-4">
         <Link to="/" className="flex no-underline link gap-3 items-center justify-center">
           <img src={logo} alt="logo" className="sm:size-10 size-9" />
-          <p className="text-xl sm:text-2xl font-bold">SkillTuner AI</p>
+          <span className="flex items-center gap-2 text-xl sm:text-2xl font-bold">
+            SkillTuner
+            <div className="flex gap-0.5 items-center badge badge-soft badge-accent px-2 py-3.5">
+              <p className="font-black">AI</p>
+              <Sparkles fill="#f6b273" stroke="#f6b273" className="size-4.5" />
+            </div>
+          </span>
         </Link>
       </div>
       
