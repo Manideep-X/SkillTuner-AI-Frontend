@@ -12,14 +12,14 @@ import { ToastStyle } from "../utils/ToastStyle";
 import { ApiEndpointExtensions } from "../api/ApiEndpointExtensions";
 
 const SignupSchema = z.object({
-  firstName: z.string().min(1, "First name can't be empty!"),
+  firstName: z.string().trim().min(1, "First name can't be empty!"),
 
-  lastName: z.string().min(1, "Last name can't be empty!"),
+  lastName: z.string().trim().min(1, "Last name can't be empty!"),
 
   email: z.email("This is not a valid email!"),
 
   password: z
-    .string()
+    .string().trim()
     .min(6, "Must be atleast 6 characters long")
     .regex(/[a-z]/, "Must contain alteast one lower character")
     .regex(/[A-Z]/, "Must contain alteast one upper character")
