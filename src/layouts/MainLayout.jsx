@@ -32,8 +32,7 @@ const MainLayout = () => {
         </nav>
 
         {/* Other pages will be displayed here */}
-        <div className="overflow-x-hidden overflow-y-auto grow">
-          MainLayout all components
+        <div className="overflow-x-hidden overflow-y-auto grow text-white">
           <Outlet context={{ setTitle }} />
         </div>
 

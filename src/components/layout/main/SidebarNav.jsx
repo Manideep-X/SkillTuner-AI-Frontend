@@ -71,22 +71,22 @@ const SidebarNav = ({ isOpen }) => {
                         {/* Full profile details and more options */}
                         {
                             isMoreOpen &&
-                            <ul className="flex flex-col is-drawer-close:hidden w-full gap-2 m-0 px-2 pb-2 border-none">
+                            <ul className="flex flex-col is-drawer-close:hidden w-full m-0 px-2 pb-2 border-none">
                                 <li className="flex flex-row w-full">
                                     <div className="flex gap-1 w-full hover:cursor-auto hover:bg-inherit">
-                                        <User className="size-5" />
+                                        <User className="size-5 text-secondary" />
                                         <p className="truncate max-w-56">{userDetails?.firstName} {userDetails?.lastName}</p>
                                     </div>
                                 </li>
                                 <li className="flex flex-row gap-1 w-full">   
                                     <div className="flex gap-1 w-full hover:cursor-auto hover:bg-inherit">
-                                        <Mail className="size-5" />
+                                        <Mail className="size-5 text-secondary" />
                                         <p className="truncate max-w-56">{userDetails?.email}</p>
                                     </div>                        
                                 </li>
-                                <li onClick={handleSignout}>
-                                    <div className="flex gap-1 btn btn-outline btn-error shadow-none">
-                                        <LogOut className="size-5" />
+                                <li onClick={handleSignout} className="pt-3">
+                                    <div className="flex gap-1 btn text-[15px] py-4 btn-outline btn-error hover:text-white shadow-none text-shadow-none">
+                                        <LogOut className="size-4.5" />
                                         Signout
                                     </div>
                                 </li>
@@ -96,8 +96,12 @@ const SidebarNav = ({ isOpen }) => {
                 </li>
 
                 {/* New analysis option */}
-                <li>
-                    <button className="is-drawer-close:tooltip is-drawer-close:tooltip-right py-2" data-tip="New Analysis">
+                <li className=" h-fit">
+                    <button 
+                        className="is-drawer-close:tooltip is-drawer-close:tooltip-right py-2" 
+                        data-tip="New Analysis"
+                        onClick={() => window.location.hash = "#analysis"}
+                    >
                         {/* New Analysis icon */}
                         <Sparkles className="ml-1 text-accent" />
                         <span className="is-drawer-close:hidden text-white truncate">New Analysis</span>
@@ -105,7 +109,7 @@ const SidebarNav = ({ isOpen }) => {
                 </li>
 
                 {/* Dashboard navigation option */}
-                <li>
+                <li className=" h-fit">
                     <NavLink to="/user/home" className="is-drawer-close:tooltip is-drawer-close:tooltip-right py-2" data-tip="Dashboard">
                         {/* Dashboard icon */}
                         <House className="ml-1 text-accent" />
@@ -114,7 +118,7 @@ const SidebarNav = ({ isOpen }) => {
                 </li>
 
                 {/* Settings option */}
-                <li>
+                <li className=" h-fit">
                     <button 
                         className="is-drawer-close:tooltip is-drawer-close:tooltip-right py-2" 
                         data-tip="Settings"
@@ -129,13 +133,14 @@ const SidebarNav = ({ isOpen }) => {
                 <li></li>
 
                 {/* List of Analysed results */}
-                <li>
-                    <div className="flex flex-col gap-0 is-drawer-open:hover:cursor-auto is-drawer-close:hover:cursor-pointer is-drawer-open:hover:text-inherit is-drawer-close:tooltip is-drawer-close:tooltip-right py-2 is-drawer-open:pl-0 is-drawer-open:active:bg-inherit is-drawer-open:active:text-inherit is-drawer-open:focus-visible:bg-inherit is-drawer-open:hover:bg-inherit" data-tip="Analyses List">
+                <li className="grow min-h-0">
+                    <div className="flex flex-col gap-0 is-drawer-open:hover:cursor-auto is-drawer-close:hover:cursor-pointer is-drawer-open:hover:text-inherit is-drawer-close:tooltip is-drawer-close:tooltip-right py-2 is-drawer-open:pt-0 is-drawer-open:px-0 is-drawer-open:active:bg-inherit is-drawer-open:active:text-inherit is-drawer-open:focus-visible:bg-inherit is-drawer-open:hover:bg-inherit" data-tip="Analyses List">
                         <label htmlFor="my-drawer-4" aria-label="close sidebar">
                             <FolderTree className="is-drawer-open:hidden border rounded-sm border-accent p-1 size-8 text-primary" />
                         </label>
-                        <span className="w-full is-drawer-close:hidden text-primary text-left font-semibold">Analyses List</span>
-                        <div className="is-drawer-close:hidden w-full">
+                        <span className="px-3 pb-1 w-full is-drawer-close:hidden text-primary text-left font-semibold">Analyses List</span>
+                        <div className="is-drawer-close:hidden w-full flex-1 overflow-y-auto min-h-0">
+                            <ListOfAnalyses />
                             <ListOfAnalyses />
                         </div>
                     </div>
