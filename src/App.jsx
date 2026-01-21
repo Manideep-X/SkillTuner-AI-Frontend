@@ -4,8 +4,11 @@ import { CircleCheck, CircleX, Info, TriangleAlert } from "lucide-react"
 import SettingsLayout from "./layouts/SettingsLayout"
 import AnalysisFormDialog from "./components/analysis result/AnalysisFormDialog"
 import JobDescriptionDialog from "./components/job description/JobDescriptionDialog"
+import { useAuth } from "./contexts/AuthContext"
 
 function App() {
+
+  const { authStatus } = useAuth();
 
   return (
     <>
@@ -21,7 +24,7 @@ function App() {
         }}
         toastOptions={{
           style: {
-            background: "#141414",
+            background: "#0f0f0f",
             color: "#ffe8d2",
             border: "1px solid #31393b",
             borderRadius: "4px",
@@ -43,7 +46,7 @@ function App() {
         }}
         toastOptions={{
           style: {
-            background: "#141414",
+            background: "#0f0f0f",
             color: "#ffe8d2",
             border: "1px solid #31393b",
             borderRadius: "4px",
@@ -53,9 +56,14 @@ function App() {
         }}
       />
       <AppRoutes />
-      <SettingsLayout />
-      <AnalysisFormDialog />
-      <JobDescriptionDialog />
+      {
+        authStatus === "authenticated" &&
+        <>
+          <AnalysisFormDialog />
+          <SettingsLayout />
+          <JobDescriptionDialog />
+        </>
+      }
     </>
   )
 }
