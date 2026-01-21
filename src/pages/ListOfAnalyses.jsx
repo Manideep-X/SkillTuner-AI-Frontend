@@ -3,7 +3,7 @@ import ApiClient from "../api/ApiClient"
 import { ApiEndpointExtensions } from "../api/ApiEndpointExtensions"
 import ErrorHandling from "../utils/errors/ErrorHandling"
 import { useAuth } from "../contexts/AuthContext"
-import { useNavigate } from "react-router-dom"
+import { NavLink, useNavigate } from "react-router-dom"
 import ListOfAnalysesLoading from "../components/layout/main/ListOfAnalysesLoading"
 import { toast } from "sonner"
 import { ToastStyle } from "../utils/ToastStyle"
@@ -63,65 +63,72 @@ const ListOfAnalyses = () => {
   return (
     <section className="w-full p-0 overflow-y-auto">{
       listOfResults.length > 0 &&
-      <ul className="menu w-full grow m-0 p-0">
+      <ul className="flex flex-col w-full grow m-0 p-0">
         {
           sortedResults.map(result => (
             <li 
               key={result.jdId} 
               id={result.jdId} 
-              onClick={() => {
-                navigate(`/user/analysis/${result.resumeId}/${result.jdId}`);
-              }}
+              className="w-full"
             >
-              <div className="flex items-center justify-between pl-2 overflow-visible">
-                <div>
-                  <div className="flex gap-1 w-full items-center">
-                    {
-                      result.updationTime || 
-                      <div className="h-full badge badge-soft badge-error hover:bg-error/15 p-1 rounded-full tooltip tooltip-right tooltip-error" data-tip="Analysis pending">
-                        <CircleFadingArrowUp />
-                      </div>
-                    }
-                    <p className="text-left text-lg truncate w-54 text-white font-semibold">
-                      {result.jobTitle}
-                    </p>
-                  </div>
-                  <div className="pl-2 pt-1">
-                    <span className="flex gap-1 items-center w-56 truncate">
-                      <FileUser className="size-5" />
-                      <p className="w-56 truncate text-xs">
-                        {result.resumeTitle}
+              <NavLink 
+                to={`/user/analysis/${result.resumeId}/${result.jdId}`}
+                className={({ isActive }) => `w-full h-full py-2.5 ${isActive && "font-black bg-base-content/10"}`}
+              >{({ isActive }) => (
+
+                <div className="flex items-center justify-between overflow-visible">
+
+                  {/* Main details of the analysis item */}
+                  <div>
+                    <div className="flex gap-1 w-full items-center">
+                      {
+                        result.updationTime || 
+                        <div className="h-full badge badge-soft badge-error hover:bg-error/15 p-1 rounded-full tooltip tooltip-right tooltip-error" data-tip="Analysis pending">
+                          <CircleFadingArrowUp />
+                        </div>
+                      }
+                      <p className="text-left text-lg truncate w-54 text-white font-semibold">
+                        {result.jobTitle}
                       </p>
-                    </span>
-                    <span className="flex gap-1 items-center w-56 truncate">
-                      <Building2 className="size-5" />
-                      <p className="w-56 truncate text-xs">
-                        {result.companyName}
-                      </p>
-                    </span>
+                    </div>
+                    <div className="pl-2 pt-1">
+                      <span className="flex gap-1 items-center w-56 truncate">
+                        <FileUser className="size-5" />
+                        <p className="w-56 truncate text-xs">
+                          {result.resumeTitle}
+                        </p>
+                      </span>
+                      <span className="flex gap-1 items-center w-56 truncate">
+                        <Building2 className="size-5" />
+                        <p className="w-56 truncate text-xs">
+                          {result.companyName}
+                        </p>
+                      </span>
+                    </div>
                   </div>
-                </div>
-                
-                {/* more option and delete pop-up menu */}
-                <div onClick={(e) => e.stopPropagation()} className="relative">
-                  <div className="dropdown dropdown-left dropdown-center">
-                    <button tabIndex={0} role="button" className="size-8 p-1 rounded-full shadow-none btn btn-soft btn-primary">
-                      <EllipsisVertical />
-                    </button>
-                    <ul tabIndex={0} className="dropdown-content menu absolute z-50 bg-base-100 rounded-box w-52 p-2 shadow-sm">
-                      <li>
-                        <button type="button" className="flex gap-2">
-                          <Trash2 className="p-0.5 text-error" />
-                          <p className="truncate">
-                            Delete
-                          </p>
-                        </button>
-                      </li>
-                    </ul>
+                    
+                  {/* more option and delete pop-up menu */}
+                  <div onClick={(e) => e.stopPropagation()} className="relative">
+                    <div className="dropdown dropdown-left dropdown-center">
+                      <button tabIndex={0} role="button" className="size-8 p-1 rounded-full shadow-none btn btn-soft btn-primary">
+                        <EllipsisVertical />
+                      </button>
+                      <ul tabIndex={0} className="dropdown-content menu absolute z-50 bg-base-100 rounded-box w-52 p-2 shadow-sm">
+                        <li>
+                          <button type="button" className="flex gap-2">
+                            <Trash2 className="p-0.5 text-error" />
+                            <p className="truncate">
+                              Delete
+                            </p>
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
                   </div>
+
                 </div>
 
-              </div>
+              )}</NavLink>
             </li>
           ))
         }

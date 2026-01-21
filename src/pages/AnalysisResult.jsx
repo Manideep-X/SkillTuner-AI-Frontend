@@ -11,7 +11,7 @@ const AnalysisResult = () => {
 
   const { resumeId, jdId } = useParams();
   const navigate = useNavigate();
-  const [analysedData, setAnalysedData] = useState({});
+  const [analysedData, setAnalysedData] = useState({ resume: {}, jobDescription: {}, result: {} });
   const [isLoading, setIsLoading] = useState({ resume: true, jobDescription: true, result: true });
   const { signout } = useAuth();
   const hasNavigated = useRef(false);
@@ -34,7 +34,7 @@ const AnalysisResult = () => {
           navigate(result.action);
         }
       }
-      else setAnalysedData(prevData => ({ ...prevData, ...resData }));
+      else setAnalysedData(prevData => ({ ...prevData, resume: resData }));
     } catch (e) {
       toast.error("Error occured while fetching resume details!", { toasterId: "global", style: ToastStyle.error });
     } finally {
@@ -59,7 +59,7 @@ const AnalysisResult = () => {
           navigate(result.action);
         }
       }
-      else setAnalysedData(prevData => ({ ...prevData, ...resData }));
+      else setAnalysedData(prevData => ({ ...prevData, jobDescription: resData }));
     } catch (e) {
       toast.error("Error occured while fetching job description!", { toasterId: "global", style: ToastStyle.error });
     } finally {
@@ -84,7 +84,7 @@ const AnalysisResult = () => {
           navigate(result.action);
         }
       }
-      else setAnalysedData(prevData => ({ ...prevData, ...resData }));
+      else setAnalysedData(prevData => ({ ...prevData, result: resData }));
     } catch (e) {
       toast.error("Error occured while fetching analysed result!", { toasterId: "global", style: ToastStyle.error });
     } finally {
@@ -99,12 +99,12 @@ const AnalysisResult = () => {
   }, [resumeId, jdId]);
   
   useEffect(() => {
-    if (analysedData?.jobTitle) 
-      setTitle(analysedData.jobTitle);
+    if (analysedData?.jobDescription && analysedData?.jobDescription.jobTitle) 
+      setTitle(analysedData.jobDescription.jobTitle);
     return () => {
       setTitle("");
     }
-  }, [analysedData?.jobTitle, setTitle]);
+  }, [analysedData?.jobDescription?.jobTitle, setTitle]);
 
   if (isLoading.jobDescription || isLoading.resume || isLoading.result) {
     return <AnalysisResultLoading />
@@ -116,7 +116,3 @@ const AnalysisResult = () => {
 }
 
 export default AnalysisResult
-
-// resumes/resumeId/
-// resumes/resumeId/job-descriptions/jdId
-// resumes/resumeId/job-descriptions/jdId/analysis-result
