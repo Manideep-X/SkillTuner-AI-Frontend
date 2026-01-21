@@ -26,16 +26,13 @@ const ResumeFormFields = () => {
         {/* Input for resume file as file input */}
         <fieldset className="w-full fieldset">
             <legend className="fieldset-legend text-white">Pick a resume</legend>
-            <label className={`input file-input input-md h-10 w-full
-              ${errors.resumeFile ? 'input-error' : (dirtyFields.resumeFile ? 'input-success' : '')}
-            `}>
-                <input
-                  type="file"
-                  {...register("resumeFile")}
-                  placeholder="Resume"
-                  title="Upload the resume"
-                />
-            </label>
+            <input 
+              className={`input file-input input-md h-10 w-full shadow-none text-shadow-none
+              ${errors.resumeFile ? 'input-error' : (dirtyFields.resumeFile ? 'input-success text-white' : 'text-base-content/50')}`}
+              type="file"
+              {...register("resumeFile")}
+              title="Upload the resume"
+            />
             <label className="label">Max size 3MB</label>
             { errors.resumeFile && <div className="text-error">{errors.resumeFile.message}</div> }
         </fieldset>
