@@ -1,6 +1,6 @@
 import z from "zod"
 
-const MAX_RESUME_SIZE = 1 * 1024 * 1024; // 3 MB
+const MAX_RESUME_SIZE = 3 * 1024 * 1024; // 3 MB
 const ACCEPTED_EXTENSIONS = ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
 
 const resumeFormSchema = z.object({
