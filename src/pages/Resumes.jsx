@@ -12,6 +12,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { resumeFormSchema } from "../utils/ResumeFormSchema";
 import ResumeFormFields from "../components/resume/ResumeFormFields";
+import { useAuth } from "../contexts/AuthContext";
 
 const Resumes = () => {
 
@@ -19,6 +20,7 @@ const Resumes = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
   const navigate = useNavigate();
+  const { authStatus, signout } = useAuth();
 
   const getResumes = async () => {
     setIsLoading(true);
@@ -73,7 +75,7 @@ const Resumes = () => {
 
     try {
       const { okay, status, message } = await ApiClient(ApiEndpointExtensions.listOfResumes, {
-        methods: "POST",
+        method: "POST",
         // Not setting content type manually as browser will it correctly
         // headers: {
         //   "Content-Type": "multipart/form-data"
@@ -81,7 +83,7 @@ const Resumes = () => {
         body: formData
       });
       if (!okay) {
-        const result = ErrorHandling(status);
+        const result = ErrorHandling(status, signout);
         if (result.toast) {
           result.toast === "error"
             ? toast.error(message, { toasterId: "global", style: ToastStyle.error })
@@ -96,6 +98,7 @@ const Resumes = () => {
   }
 
   useEffect(() => {
+    if (authStatus !== "authenticated") return;
     getResumes();
   }, []);
 
@@ -106,13 +109,15 @@ const Resumes = () => {
   return (
     <section className="m-2">
 
-      {/* Form for adding a new resume */}
+      {/* Title of resume section */}
       <div className="px-1 pb-3 pt-2">
         <h2 className="max-w-72 truncate sm:text-xl text-lg font-bold">Add a new resume</h2>
       </div>
+
+      {/* Form for adding a new resume */}
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onFormSubmit)} className="fieldset w-full px-6 bg-base-200 rounded-lg">
-          <fieldset className="fieldset rounded-box border-base-300">
+          <fieldset className="fieldset rounded-box border-base-300 px-7 py-3">
 
             <ResumeFormFields />
 
@@ -128,7 +133,7 @@ const Resumes = () => {
                 </div>
               : "Add resume"
             }</button>
-            <button className="btn btn-ghost mt-1" onClick={() => reset()} type="reset">Reset</button>
+            <button className="btn btn-ghost mt-1 text-white" onClick={() => reset()} type="reset">Reset</button>
 
           </fieldset>
         </form>
@@ -140,7 +145,7 @@ const Resumes = () => {
       </div>
       {
         resumes.map(resume => (
-          <div id={resume.id} className="collapse collapse-arrow bg-base-100 border border-base-300 rounded-lg">
+          <div id={resume.id} key={resume.id} className="collapse collapse-arrow bg-base-100 border border-base-300 rounded-lg">
             <input type="radio" name="my-accordion-2" />
             <div className="flex items-center gap-4 collapse-title font-semibold">
               <div className="text-4xl font-thin opacity-30 tabular-nums">{resume.id}</div>
