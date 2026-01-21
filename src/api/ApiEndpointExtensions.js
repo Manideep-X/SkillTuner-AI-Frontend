@@ -4,7 +4,11 @@ const ApiEndpointExtensions = {
     signout: "user/signout",
     userDetails: "user/details",
     listOfResumes: "resumes",
-    listOfAnalyses: "resumes/job-descriptions"
+    listOfAnalyses: "resumes/job-descriptions",
+    settings: {
+        rename: "settings/username",
+        updatePassword: "settings/password"
+    },
 }
 
 export { ApiEndpointExtensions }
