@@ -66,7 +66,7 @@ const AnalysisFormDialog = () => {
             </h3>
 
             {/* Contents of the analysis's modal */}
-            <div className="flex justify-center sm:flex-row flex-col m-0 p-0 w-full grow h-130 overflow-y-auto bg-base-content/2">
+            <div className="flex sm:flex-row flex-col m-0 p-0 w-full grow h-130 overflow-y-auto bg-base-content/2">
               <NewAnalysisDetails />
             </div>
 
