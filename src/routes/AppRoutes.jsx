@@ -12,6 +12,10 @@ import MainLayout from "../layouts/MainLayout"
 import SettingsLayout from "../layouts/SettingsLayout"
 import AuthLayout from "../layouts/AuthLayout"
 import RoutesGuard from "./RoutesGuard"
+import DashboardLoading from "../components/layout/main/DashboardLoading"
+import HomeLayoutLoading from "../components/layout/main/HomeLayoutLoading"
+import ListOfAnalysesLoading from "../components/layout/main/ListOfAnalysesLoading"
+import AnalysisResultLoading from "../components/analysis result/AnalysisResultLoading"
 
 const AppRoutes = () => {
   return (
@@ -54,7 +58,7 @@ const AppRoutes = () => {
       <Route path="*" element={<Navigate to="/" replace />} />
 
       {/* Testing */}
-      <Route path="/testhome" element={<MainLayout />} />
+      <Route path="/loadresult" element={<AnalysisResultLoading />} />
 
     </Routes>
   )
