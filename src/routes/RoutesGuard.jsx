@@ -1,14 +1,14 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import DashboardLoading from "../components/layout/main/DashboardLoading";
 import AuthLoading from "../components/authentication/AuthLoading";
+import HomeLayoutLoading from "../components/layout/main/HomeLayoutLoading";
 
 const RoutesGuard = ({ isProtected }) => {
   
   const { authStatus } = useAuth();
 
   if (authStatus === "loading" || authStatus === null)
-    return isProtected ? <DashboardLoading /> : <AuthLoading />;
+    return isProtected ? <HomeLayoutLoading /> : <AuthLoading />;
 
   if (isProtected)
     return authStatus === "authenticated" ? <Outlet /> : <Navigate to="/signin" replace />;
