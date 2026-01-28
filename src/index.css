@@ -48,3 +48,7 @@
 html {
   font-family: "Plus Jakarta Sans", sans-serif;
 }
+
+:root {
+  --read-more-shadow: rgba(0, 0, 0, 0.35) 0px -50px 36px -28px inset;
+}
