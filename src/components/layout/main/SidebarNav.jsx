@@ -1,4 +1,4 @@
-import { ChevronsDownUp, ChevronsUpDown, Cog, FolderTree, House, LogOut, Mail, Sparkles, User } from "lucide-react"
+import { ChevronsDownUp, ChevronsUpDown, Cog, FolderTree, House, LogOut, Mail, PanelRightOpen, Sparkles, User } from "lucide-react"
 import logo from "../../../assets/logo.png"
 import { useState } from "react";
 import { useAuth } from "../../../contexts/AuthContext";
@@ -24,16 +24,21 @@ const SidebarNav = ({ isOpen }) => {
             <ul className="menu w-full grow">
                 {/* SkillTuner AI Logo */}
                 <li>
-                    <label htmlFor="my-drawer-4" aria-label="open sidebar" className="btn-square w-full is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Toggle Sidebar">
+                    <label htmlFor="my-drawer-4" aria-label="open sidebar" className="flex justify-between btn-square w-full is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Toggle Sidebar">
                         {/* Sidebar toggle icon */}
-                        <img src={logo} alt="logo" className="ml-2 sm:size-10 size-9"/>
-                        <span className="flex items-center gap-2 is-drawer-close:hidden text-white font-bold text-xl truncate">
-                            SkillTuner 
-                            <div className="flex gap-0.5 items-center badge badge-soft badge-accent px-2 py-3">
-                                <p className="text-sm font-black">AI</p>
-                                <Sparkles fill="#f6b273" stroke="#f6b273" className="size-3.5" />
-                            </div>
-                        </span>
+                        <div className="flex w-full gap-2">
+                            <img src={logo} alt="logo" className="ml-2 sm:size-10 size-9"/>
+                            <span className="flex items-center gap-2 is-drawer-close:hidden text-white font-bold text-xl truncate">
+                                SkillTuner 
+                                <div className="flex gap-0.5 items-center badge badge-soft badge-accent px-2 py-3">
+                                    <p className="text-sm font-black">AI</p>
+                                    <Sparkles fill="#f6b273" stroke="#f6b273" className="size-3.5" />
+                                </div>
+                            </span>
+                        </div>
+                        <div type="button" className="sm:hidden flex btn btn-square btn-ghost btn-lg h-full items-center">
+                            <PanelRightOpen />
+                        </div>
                     </label>
                 </li>
 
@@ -110,9 +115,13 @@ const SidebarNav = ({ isOpen }) => {
 
                 {/* Dashboard navigation option */}
                 <li className=" h-fit">
-                    <NavLink to="/user/home" className="is-drawer-close:tooltip is-drawer-close:tooltip-right py-2" data-tip="Dashboard">
+                    <NavLink 
+                        to="/user/home" 
+                        className={({ isActive }) => `is-drawer-close:tooltip is-drawer-close:tooltip-right py-2 ${isActive && "font-bold bg-base-content/10 is-drawer-open:border-l-5 is-drawer-open:border-accent"} transition-all`} 
+                        data-tip="Dashboard"
+                    >
                         {/* Dashboard icon */}
-                        <House className="ml-1 text-accent" />
+                        <House className="ml-1 text-accent font-black" />
                         <span className="is-drawer-close:hidden text-white">Dashboard</span>
                     </NavLink>
                 </li>
@@ -134,13 +143,12 @@ const SidebarNav = ({ isOpen }) => {
 
                 {/* List of Analysed results */}
                 <li className="grow min-h-0">
-                    <div className="flex flex-col gap-0 is-drawer-open:hover:cursor-auto is-drawer-close:hover:cursor-pointer is-drawer-open:hover:text-inherit is-drawer-close:tooltip is-drawer-close:tooltip-right py-2 is-drawer-open:pt-0 is-drawer-open:px-0 is-drawer-open:active:bg-inherit is-drawer-open:active:text-inherit is-drawer-open:focus-visible:bg-inherit is-drawer-open:hover:bg-inherit" data-tip="Analyses List">
+                    <div className="is-drawer-open:flex flex-col gap-0 is-drawer-open:hover:cursor-auto is-drawer-close:hover:cursor-pointer is-drawer-open:hover:text-inherit is-drawer-close:tooltip is-drawer-close:tooltip-right py-2 is-drawer-open:pt-0 is-drawer-open:px-0 is-drawer-open:active:bg-inherit is-drawer-open:active:text-inherit is-drawer-open:focus-visible:bg-inherit is-drawer-open:hover:bg-inherit" data-tip="Analyses List">
                         <label htmlFor="my-drawer-4" aria-label="close sidebar">
                             <FolderTree className="is-drawer-open:hidden border rounded-sm border-accent p-1 size-8 text-primary" />
                         </label>
                         <span className="px-3 pb-1 w-full is-drawer-close:hidden text-primary text-left font-semibold">Analyses List</span>
                         <div className="is-drawer-close:hidden w-full flex-1 overflow-y-auto min-h-0">
-                            <ListOfAnalyses />
                             <ListOfAnalyses />
                         </div>
                     </div>
