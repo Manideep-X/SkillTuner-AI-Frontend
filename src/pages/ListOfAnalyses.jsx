@@ -21,7 +21,6 @@ const ListOfAnalyses = () => {
 
     try {
       const { okay, status, resData, message } = await ApiClient(ApiEndpointExtensions.listOfAnalyses, {});
-      console.log(resData);
   
       if (!okay) {
         const result = ErrorHandling(status, signout);
@@ -73,21 +72,21 @@ const ListOfAnalyses = () => {
             >
               <NavLink 
                 to={`/user/analysis/${result.resumeId}/${result.jdId}`}
-                className={({ isActive }) => `w-full h-full py-2.5 ${isActive && "font-black bg-base-content/10"}`}
+                className={({ isActive }) => `w-full flex items-center h-full py-2.5 transition-all ${isActive ? "font-bold bg-base-content/10 border-l-5 border-primary" : ""}`}
               >{({ isActive }) => (
 
-                <div className="flex items-center justify-between overflow-visible">
+                <div className="flex items-center justify-between w-full overflow-visible">
 
                   {/* Main details of the analysis item */}
                   <div>
                     <div className="flex gap-1 w-full items-center">
                       {
-                        result.updationTime || 
+                        !result.updationTime &&
                         <div className="h-full badge badge-soft badge-error hover:bg-error/15 p-1 rounded-full tooltip tooltip-right tooltip-error" data-tip="Analysis pending">
                           <CircleFadingArrowUp />
                         </div>
                       }
-                      <p className="text-left text-lg truncate w-54 text-white font-semibold">
+                      <p className={`text-left text-lg truncate text-white transition-all ${isActive ? "font-black" : "font-semibold"} ${result.updationTime ? "w-60" : "w-54"}`}>
                         {result.jobTitle}
                       </p>
                     </div>
@@ -108,16 +107,22 @@ const ListOfAnalyses = () => {
                   </div>
                     
                   {/* more option and delete pop-up menu */}
-                  <div onClick={(e) => e.stopPropagation()} className="relative">
+                  <div 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }}
+                    className="relative"
+                  >
                     <div className="dropdown dropdown-left dropdown-center">
                       <button tabIndex={0} role="button" className="size-8 p-1 rounded-full shadow-none btn btn-soft btn-primary">
                         <EllipsisVertical />
                       </button>
-                      <ul tabIndex={0} className="dropdown-content menu absolute z-50 bg-base-100 rounded-box w-52 p-2 shadow-sm">
+                      <ul tabIndex={0} className="dropdown-content menu absolute z-50 bg-base-100 border border-base-content/20 rounded-box w-52 p-2 shadow-md/70">
                         <li>
                           <button type="button" className="flex gap-2">
                             <Trash2 className="p-0.5 text-error" />
-                            <p className="truncate">
+                            <p className="truncate font-medium">
                               Delete
                             </p>
                           </button>
