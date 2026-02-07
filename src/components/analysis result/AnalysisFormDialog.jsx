@@ -48,7 +48,7 @@ const AnalysisFormDialog = () => {
   }, [authStatus, location.pathname, location.hash]);
 
   return (
-    <dialog id="analysisModal" ref={dialogRef} onClose={closeModal} className="modal modal-bottom sm:modal-middle backdrop-blur-[2px]">
+    <dialog id="analysisModal" ref={dialogRef} onClose={closeModal} className="modal modal-bottom sm:modal-middle backdrop-blur-[2px] z-40">
       {
         authStatus === "loading"
         ?
@@ -80,7 +80,7 @@ const AnalysisFormDialog = () => {
           </div>
       }
     </dialog>
-  )
+  );
 }
 
 export default AnalysisFormDialog
