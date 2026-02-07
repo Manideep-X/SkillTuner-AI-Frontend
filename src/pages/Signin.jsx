@@ -10,6 +10,7 @@ import ApiClient from "../api/ApiClient"
 import ErrorHandling from "../utils/errors/ErrorHandling"
 import { useAuth } from "../contexts/AuthContext"
 import { ApiEndpointExtensions } from "../api/ApiEndpointExtensions"
+import BrowserTabTitle from "../utils/BrowserTabTitle"
 
 const SigninSchema = z.object({
   
@@ -67,6 +68,7 @@ const Signin = () => {
   return (
     <>
 
+      <BrowserTabTitle title="Signin - SkillTuner AI" />
       {/* Sign in and other texts */}
       <div className="flex flex-row md:flex-col items-center md:items-start justify-center gap-6 p-4 h-full md:px-10 md:py-16 md:pr-0 rounded-l-sm">
         <div className="flex flex-col justify-center md:gap-6 gap-2">

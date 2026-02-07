@@ -13,6 +13,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { resumeFormSchema } from "../utils/ResumeFormSchema";
 import ResumeFormFields from "../components/resume/ResumeFormFields";
 import { useAuth } from "../contexts/AuthContext";
+import { useDelResumeModal } from "../contexts/DelResumeModalContext";
+import { useAnalysisRefresh } from "../contexts/AnalysisListReloadContext";
+import { useHomeListRefresh } from "../contexts/HomeListReloadContext";
 
 const Resumes = () => {
 
@@ -21,6 +24,9 @@ const Resumes = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const navigate = useNavigate();
   const { authStatus, signout } = useAuth();
+  const { onDialogOpen } = useDelResumeModal();
+  const { triggerListReload } = useAnalysisRefresh();
+  const { triggerHomeListReload } = useHomeListRefresh();
 
   const getResumes = async () => {
     setIsLoading(true);
@@ -36,7 +42,10 @@ const Resumes = () => {
         if (result.action)
           navigate(result.action);
       }
-      else setResumes(resData);
+      else {
+        triggerHomeListReload();
+        setResumes(resData);
+      }
     } catch (e) {
       toast.error("Error occured while fetching list of resumes!", { toasterId: "global", style: ToastStyle.error });
     } finally {
@@ -52,6 +61,9 @@ const Resumes = () => {
       });
       toast.success("Resume deleted successfully!", { toasterId: "global", style: ToastStyle.success });
       getResumes();
+      triggerListReload();
+      triggerHomeListReload();
+      navigate("user/home#settings/resumes");
     } catch (e) {
       toast.error(`Error occured while deleting a resume!`, { toasterId: "global", style: ToastStyle.error });
     } finally {
@@ -76,7 +88,7 @@ const Resumes = () => {
     try {
       const { okay, status, message } = await ApiClient(ApiEndpointExtensions.listOfResumes, {
         method: "POST",
-        // Not setting content type manually as browser will it correctly
+        // Not setting content type manually as the browser will automatically detect the header
         // headers: {
         //   "Content-Type": "multipart/form-data"
         // },
@@ -90,17 +102,22 @@ const Resumes = () => {
             : toast.warning(message, { toasterId: "global", style: ToastStyle.warning });
         }
       }
-      else
+      else {
         toast.success("The resume is successfully added!", { toasterId: "global", style: ToastStyle.success });
+        reset();
+        await getResumes();
+        navigate("user/home#settings/resumes");
+      }
     } catch (e) {
       toast.error("Error occured while trying to save the resume!", { toasterId: "global", style: ToastStyle.error });
     }
   }
 
   useEffect(() => {
-    if (authStatus !== "authenticated") return;
-    getResumes();
-  }, []);
+    if (authStatus === "authenticated") {
+      getResumes();
+    }
+  }, [authStatus]);
 
   if (isLoading) {
     return <SettingsSectionLoading />
@@ -141,14 +158,14 @@ const Resumes = () => {
 
       {/* List of resumes along with preview and delete options */}
       <div className="px-1 pb-3 pt-4">
-        <h2 className="max-w-72 truncate sm:text-xl text-lg font-bold">Update saved resumes</h2>
+        <h2 className={`max-w-72 truncate sm:text-xl text-lg font-bold ${resumes.length <= 0 ? "hidden" : "flex"} `}>Update saved resumes</h2>
       </div>
       {
-        resumes.map(resume => (
+        resumes.map((resume, index) => (
           <div id={resume.id} key={resume.id} className="collapse collapse-arrow bg-base-100 border border-base-300 rounded-lg">
             <input type="radio" name="my-accordion-2" />
             <div className="flex items-center gap-4 collapse-title font-semibold">
-              <div className="text-4xl font-thin opacity-30 tabular-nums">{resume.id}</div>
+              <div className="text-4xl font-thin opacity-30 tabular-nums">{index+1}</div>
               <div className="list-col-grow text-lg text-white">
                 <div>{resume.resumeTitle}</div>
                 <div className="text-xs font-semibold opacity-60 flex gap-1 items-center">
@@ -176,18 +193,42 @@ const Resumes = () => {
                     Preview
                   </p>
                 </a>
-                <button onClick={() => onDelete(resume.id)} type="button" className={`flex items-center gap-1 btn btn-error btn-soft btn-block border border-error/40 p-5 shadow-none text-shadow-none ${isDeleting ? 'btn-disabled' : ''} `}>
-                  <Trash2 className="size-4.5" />
-                  <p className="max-w-22 truncate">
-                    Delete
-                  </p>
+                <button
+                  type="button"  
+                  onClick={() => {
+                      onDialogOpen({
+                        resume: {
+                          resumeTitle: resume.resumeTitle
+                        },
+                        onConfirm: () => {
+                          if (!resume.id) return null;
+                          onDelete(resume.id);
+                        }
+                      })
+                    }}
+                    className={`flex items-center gap-1 btn btn-error btn-soft btn-block border border-error/40 p-5 shadow-none text-shadow-none ${isDeleting ? 'btn-disabled' : ''} `}
+                  >
+                    {
+                      !isDeleting ?
+                      <>
+                        <Trash2 className="size-4.5" />
+                        <p className="max-w-22 truncate">
+                          Delete
+                        </p>
+                      </> :
+                      <>
+                        <span className="loading loading-spinner loading-md opacity-60"></span>
+                        <p className="max-w-22 truncate">
+                          Deleting...
+                        </p>
+                      </>
+                    }
                 </button>
               </div>
             </div>
           </div>
         ))
       }
-
     </section>
   )
 }

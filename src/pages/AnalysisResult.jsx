@@ -10,6 +10,7 @@ import { BriefcaseBusiness, Building2, FileText, FileTypeCorner, Sparkles, Squar
 import { fileSizeFormatter } from "../utils/FileSizeFormatter";
 import AnalysedReport from "../components/analysis result/AnalysedReport";
 import JobDescriptionDialog from "../components/job description/JobDescriptionDialog";
+import BrowserTabTitle from "../utils/BrowserTabTitle";
 
 const AnalysisResult = () => {
 
@@ -145,6 +146,7 @@ const AnalysisResult = () => {
 
   return (
     <section className="h-fit">
+      <BrowserTabTitle title={`Analysis: ${analysedData.jobDescription.jobTitle} - SkillTuner AI`} />
       <div className="sm:p-4 gap-4 flex flex-col items-center max-w-7xl mx-auto my-0">
 
         {/* Preview section */}
@@ -246,11 +248,22 @@ const AnalysisResult = () => {
           ?
             <AnalysedReport analysedData={analysedData.result} />
           :
-            <button onClick={generateResult} disabled={isGenerating} type="button" className="btn btn-accent btn-soft btn-lg hover:bg-accent/60 shadow-none text-shadow-none mx-auto my-0 px-10 py-6 rounded-lg flex items-center justify-center gap-2 relative">
-              <Sparkles className="size-5"/>
-              <p className="text-semibold">Generate Report</p>
-              <span className="size-3 rounded-full bg-secondary absolute -top-1 -right-1"></span>
-              <span className="size-3 rounded-full bg-secondary absolute -top-1 -right-1 animate-ping"></span>
+            <button onClick={generateResult} disabled={isGenerating} type="button" className="btn btn-accent btn-soft btn-lg hover:bg-accent/60 shadow-none text-shadow-none mx-auto my-0 px-10 py-6 rounded-lg relative">
+              {
+                !isGenerating
+                ?
+                  <div className="flex items-center justify-center gap-2 w-full">
+                    <Sparkles className="size-5"/>
+                    <p className="text-semibold">Generate Report</p>
+                    <span className="size-3 rounded-full bg-secondary absolute -top-1 -right-1"></span>
+                    <span className="size-3 rounded-full bg-secondary absolute -top-1 -right-1 animate-ping"></span>
+                  </div>
+                :
+                  <div className="flex items-center justify-center gap-2 w-full">
+                    <span className="loading loading-spinner loading-lg"></span>
+                    <p className="text-semibold text-accent-content/15 skeleton skeleton-text">AI is thinking...</p>
+                  </div>
+              }
             </button>
         }
 

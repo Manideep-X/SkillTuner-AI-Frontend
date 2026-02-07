@@ -10,6 +10,7 @@ import ApiClient from "../api/ApiClient";
 import ErrorHandling from "../utils/errors/ErrorHandling";
 import { ToastStyle } from "../utils/ToastStyle";
 import { ApiEndpointExtensions } from "../api/ApiEndpointExtensions";
+import BrowserTabTitle from "../utils/BrowserTabTitle";
 
 const SignupSchema = z.object({
   firstName: z.string().trim().min(1, "First name can't be empty!"),
@@ -76,6 +77,7 @@ const Signup = () => {
   return (
     <>
 
+      <BrowserTabTitle title="Welcome to SkillTuner AI" />
       {/* Sign up and other texts */}
       <div className="flex flex-row md:flex-col items-center md:items-start justify-center gap-6 p-4 h-full md:px-10 md:py-16 md:pr-0 rounded-l-sm">
         <div className="flex flex-col justify-center md:gap-6 gap-2">
