@@ -5,12 +5,14 @@ import SettingsSectionLoading from "../components/layout/settings/SettingsSectio
 import { useAuth } from "../contexts/AuthContext";
 import ErrorHandling from "../utils/errors/ErrorHandling";
 import { ToastStyle } from "../utils/ToastStyle";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { addNewAnalysisSchema } from "../utils/AddNewAnalysisSchema"
 import NoResumeSection from "../components/analysis result/NoResumeSection"
 import { useNavigate } from "react-router-dom";
+import { useAnalysisRefresh } from "../contexts/AnalysisListReloadContext";
+import { useHomeListRefresh } from "../contexts/HomeListReloadContext";
 
 const NewAnalysisDetails = () => {
 
@@ -19,6 +21,9 @@ const NewAnalysisDetails = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const { authStatus, signout } = useAuth();
   const navigate = useNavigate();
+  const submitMode = useRef("add");
+  const { triggerListReload } = useAnalysisRefresh();
+  const { homeListReload } = useHomeListRefresh();
 
   const methods = useForm({
     resolver: zodResolver(addNewAnalysisSchema),
@@ -28,10 +33,10 @@ const NewAnalysisDetails = () => {
 
   const { handleSubmit, register, formState: { isValid, isDirty, isSubmitting, errors, dirtyFields }, reset } = methods;
 
-  const onFormSubmit = async (data, e) => {
+  const onFormSubmit = async (data) => {
 
     // extracting the name of the submit button
-    const toGenerate = e.nativeEvent.submitter?.name === "addAndGenerate" ? true : false;
+    const toGenerate = submitMode.current === "generate";
     
     // Adding the job description
     let submittedIDs = { resId: null, jdId: null };
@@ -56,10 +61,12 @@ const NewAnalysisDetails = () => {
       else if (resData.id && resData.resumeId) {
         submittedIDs.jdId = resData.id;
         submittedIDs.resId = resData.resumeId;
-        setIsGenerating(true);
+        reset();
+        triggerListReload();
         if (!toGenerate) {
           toast.success("Analysis details are successfully added!", { toasterId: "global", style: ToastStyle.success });
           navigate(`/user/analysis/${submittedIDs.resId}/${submittedIDs.jdId}`);
+          return;
         }
       }
     } catch (e) {
@@ -67,35 +74,35 @@ const NewAnalysisDetails = () => {
     }
 
     // for generating results if user clicked Add and generate
-    if (toGenerate) {
-      if (submittedIDs.jdId && submittedIDs.resId) {
-        setIsGenerating(true);
-        try {
-          const { okay, status, message } = await ApiClient(`${ApiEndpointExtensions.listOfResumes}/${submittedIDs.resId}/job-descriptions/${submittedIDs.jdId}`, {
-            method: "POST"
-          });
-          if (!okay) {
-            const result = ErrorHandling(status, signout);
-            if (result.toast) {
-              result.toast == "error" ? 
-                toast.error(message, { toasterId: "global", style: ToastStyle.error }) :
-                toast.warning(message, { toasterId: "global", style: ToastStyle.warning });
-            }
-            return;
+    if (submittedIDs.jdId && submittedIDs.resId) {
+      setIsGenerating(true);
+      try {
+        const { okay, status, message } = await ApiClient(`${ApiEndpointExtensions.listOfResumes}/${submittedIDs.resId}/job-descriptions/${submittedIDs.jdId}/analysis-result`, {
+          method: "POST"
+        });
+        if (!okay) {
+          const result = ErrorHandling(status, signout);
+          if (result.toast) {
+            result.toast == "error" ? 
+              toast.error(message, { toasterId: "global", style: ToastStyle.error }) :
+              toast.warning(message, { toasterId: "global", style: ToastStyle.warning });
           }
-          else {
-            toast.success("Analysis report is successfully generated!", { toasterId: "global", style: ToastStyle.success });
-            navigate(`/user/analysis/${submittedIDs.resId}/${submittedIDs.jdId}`);
-          }
-        } catch (e) {
-          toast.error("Error occured while trying to generate results!", { toasterId: "global", style: ToastStyle.error });
-        } finally {
-          setIsGenerating(false);
+          return;
         }
+        else {
+          reset();
+          toast.success("Analysis report is successfully generated!", { toasterId: "global", style: ToastStyle.success });
+          triggerListReload();
+          navigate(`/user/analysis/${submittedIDs.resId}/${submittedIDs.jdId}`);
+        }
+      } catch (e) {
+        toast.error("Error occured while trying to generate results!", { toasterId: "global", style: ToastStyle.error });
+      } finally {
+        setIsGenerating(false);
       }
-      else {
-        toast.error("Can't find the added details!", { toasterId: "global", style: ToastStyle.error });
-      }
+    }
+    else {
+      toast.error("Can't find the added details!", { toasterId: "global", style: ToastStyle.error });
     }
 
   }
@@ -123,7 +130,7 @@ const NewAnalysisDetails = () => {
   useEffect(() => {
     if (authStatus !== "authenticated") return;
     getResumes();
-  }, []);
+  }, [authStatus, homeListReload]);
 
   if (isLoading) {
     return <SettingsSectionLoading />
@@ -147,6 +154,7 @@ const NewAnalysisDetails = () => {
                     {...register("jobTitle")}
                     placeholder="Enter job title"
                     title="Enter the job title"
+                    disabled={isSubmitting || isGenerating}
                   />
               </label>
               { errors.jobTitle && <div className="text-error">{errors.jobTitle.message}</div> }
@@ -163,6 +171,7 @@ const NewAnalysisDetails = () => {
                     {...register("companyName")}
                     placeholder="Enter company name"
                     title="Enter the company name"
+                    disabled={isSubmitting || isGenerating}
                   />
               </label>
               { errors.companyName && <div className="text-error">{errors.companyName.message}</div> }
@@ -177,6 +186,7 @@ const NewAnalysisDetails = () => {
                 `}
                 {...register("description")} 
                 placeholder="Paste the job description here (min. 40 words)"
+                disabled={isSubmitting || isGenerating}
               ></textarea>
               { errors.description && <div className="text-error">{errors.description.message}</div> }
             </fieldset>
@@ -189,6 +199,7 @@ const NewAnalysisDetails = () => {
                 {...register("resumeId")} 
                 title="select a resume to link" 
                 className={`select w-full rounded-lg h-12 ${errors.resumeId ? 'input-error' : (dirtyFields.resumeId ? 'input-success' : '')} `}
+                disabled={isSubmitting || isGenerating}
               >
                 <option value="" disabled={true}>Pick a resume</option>
                 {
@@ -218,10 +229,10 @@ const NewAnalysisDetails = () => {
                 <button 
                   className="btn btn-accent btn-soft shadow-none h-full rounded-lg text-[15px] px-6 text-shadow-none w-[49%] md:w-fit min-h-12" 
                   type="submit"
-                  name="add"
+                  onClick={() => submitMode.current = "add"}
                   disabled={ !isValid || !isDirty || isSubmitting || isGenerating }
                 >{
-                  isSubmitting
+                  (isSubmitting && submitMode.current === "add")
                   ? <div className="flex items-center gap-2 w-full h-full">
                       <span className="loading loading-spinner loading-md text-accent-content opacity-40"></span>
                       Adding...
@@ -233,17 +244,17 @@ const NewAnalysisDetails = () => {
                 <button 
                   className="btn btn-success btn-soft shadow-none h-full text-shadow-none hover:text-accent-content rounded-lg text-[15px] px-6 w-[49%] md:w-fit min-h-12" 
                   type="submit"
-                  name="addAndGenerate"
+                  onClick={() => submitMode.current = "generate"}
                   disabled={ !isValid || !isDirty || isSubmitting || isGenerating }
                 >{
-                  (isSubmitting && !isGenerating)
+                  (isSubmitting && !isGenerating && submitMode.current === "generate")
                   ? <div className="flex w-full h-full">
                       <span className="flex items-center gap-1 skeleton skeleton-text text-accent-content/20">
                         &#10024; Adding details...
                       </span>
                     </div>
                   : (
-                    isGenerating 
+                    (isGenerating && submitMode.current === "generate")
                     ? <div className="flex items-center w-full h-full">
                         <span className="flex items-center gap-1 skeleton skeleton-text text-accent-content/20">
                           &#10024; AI is thinking...

@@ -8,13 +8,18 @@ import ListOfAnalysesLoading from "../components/layout/main/ListOfAnalysesLoadi
 import { toast } from "sonner"
 import { ToastStyle } from "../utils/ToastStyle"
 import { Building2, CircleFadingArrowUp, EllipsisVertical, FileUser, Trash2 } from "lucide-react"
+import { useDelJobModal } from "../contexts/DelJobModalContext"
+import { useAnalysisRefresh } from "../contexts/AnalysisListReloadContext"
 
 const ListOfAnalyses = () => {
   
   const [isLoading, setIsLoading] = useState(true);
+  const [isJdDeleting, setIsJdDeleting] = useState(false);
   const [listOfResults, setlistOfResults] = useState([]);
   const { signout } = useAuth();
   const navigate = useNavigate();
+  const { onDialogOpen } = useDelJobModal();
+  const { reloadList } = useAnalysisRefresh();
 
   // This function fetches list of analysis of results
   const getList = async () => {
@@ -42,10 +47,26 @@ const ListOfAnalyses = () => {
     }
     
   }
+
+  const onDelete = async (resumeId, jdId) => {
+    setIsJdDeleting(true);
+    try {
+      await ApiClient(`${ApiEndpointExtensions.listOfResumes}/${resumeId}/job-descriptions/${jdId}`, {
+        method: "DELETE"
+      });
+      navigate("/user/home");
+      toast.success("Job details and it's analysed data are deleted successfully!", { toasterId: "global", style: ToastStyle.success });
+      getList();
+    } catch (e) {
+      toast.error("Error occured while deleting the job description!", { toasterId: "global", style: ToastStyle.error });
+    } finally {
+      setIsJdDeleting(false);
+    }
+  }
   
   useEffect(() => {
     getList();
-  }, []);
+  }, [reloadList]);
 
   const sortedResults = useMemo(() => {
     return [...listOfResults].sort((a, b) => {
@@ -120,11 +141,36 @@ const ListOfAnalyses = () => {
                       </button>
                       <ul tabIndex={0} className="dropdown-content menu absolute z-50 bg-base-100 border border-base-content/20 rounded-box w-52 p-2 shadow-md/70">
                         <li>
-                          <button type="button" className="flex gap-2">
-                            <Trash2 className="p-0.5 text-error" />
-                            <p className="truncate font-medium">
-                              Delete
-                            </p>
+                          <button 
+                            type="button" 
+                            onClick={() => {
+                              onDialogOpen({
+                                jobDescription: {
+                                  jobTitle: result.jobTitle
+                                },
+                                onConfirm: () => {
+                                  if (!result.jdId || !result.resumeId) return null;
+                                  onDelete(result.resumeId ,result.jdId);
+                                }
+                              })
+                            }} 
+                            className={`flex gap-2 ${isJdDeleting ? 'btn-disabled' : ''} `}
+                          >
+                            {
+                              !isJdDeleting ?
+                              <>
+                                <Trash2 className="p-0.5 text-error" />
+                                <p className="truncate font-medium">
+                                  Delete
+                                </p>
+                              </> :
+                              <>
+                                <span className="loading loading-spinner loading-md opacity-60"></span>
+                                <p className="truncate font-medium">
+                                  Deleting...
+                                </p>
+                              </>
+                            }
                           </button>
                         </li>
                       </ul>
@@ -138,7 +184,8 @@ const ListOfAnalyses = () => {
           ))
         }
       </ul>
-    }</section>
+    }
+    </section>
   )
 }
 
