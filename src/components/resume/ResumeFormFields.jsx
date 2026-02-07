@@ -33,7 +33,7 @@ const ResumeFormFields = () => {
               {...register("resumeFile")}
               title="Upload the resume"
             />
-            <label className="label">Max size 3MB</label>
+            <label className="label">Max size 4MB</label>
             { errors.resumeFile && <div className="text-error">{errors.resumeFile.message}</div> }
         </fieldset>
     </div>

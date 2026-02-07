@@ -2,13 +2,12 @@ import { useEffect } from "react"
 
 const BrowserTabTitle = ({ title }) => {
   useEffect(() => {
-    first
+    
+    document.title = title;
   
-    return () => {
-      second
-    }
-  }, [third])
-  
+  }, [title]);
+
+  return null;
 }
 
 export default BrowserTabTitle
