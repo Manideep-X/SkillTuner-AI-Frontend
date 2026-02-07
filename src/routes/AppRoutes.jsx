@@ -4,18 +4,9 @@ import Signin from "../pages/Signin"
 import Signup from "../pages/Signup"
 import Dashboard from "../pages/Dashboard"
 import AnalysisResult from "../pages/AnalysisResult"
-import Resumes from "../pages/Resumes"
-import UsernameChange from "../pages/UsernameChange"
-import PasswordChange from "../pages/PasswordChange"
-
 import MainLayout from "../layouts/MainLayout"
-import SettingsLayout from "../layouts/SettingsLayout"
 import AuthLayout from "../layouts/AuthLayout"
 import RoutesGuard from "./RoutesGuard"
-import DashboardLoading from "../components/layout/main/DashboardLoading"
-import HomeLayoutLoading from "../components/layout/main/HomeLayoutLoading"
-import ListOfAnalysesLoading from "../components/layout/main/ListOfAnalysesLoading"
-import AnalysisResultLoading from "../components/analysis result/AnalysisResultLoading"
 
 const AppRoutes = () => {
   return (
@@ -56,9 +47,6 @@ const AppRoutes = () => {
 
       {/* For the wild card */}
       <Route path="*" element={<Navigate to="/" replace />} />
-
-      {/* Testing */}
-      <Route path="/loadresult" element={<AnalysisResultLoading />} />
 
     </Routes>
   )
