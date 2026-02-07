@@ -3,8 +3,11 @@ import AppRoutes from "./routes/AppRoutes"
 import { CircleCheck, CircleX, Info, TriangleAlert } from "lucide-react"
 import SettingsLayout from "./layouts/SettingsLayout"
 import AnalysisFormDialog from "./components/analysis result/AnalysisFormDialog"
-import JobDescriptionDialog from "./components/job description/JobDescriptionDialog"
 import { useAuth } from "./contexts/AuthContext"
+import { DelResumeModalProvider } from "./contexts/DelResumeModalContext"
+import JobDeleteDialog from "./components/job description/JobDeleteDialog"
+import ResumeDeleteDialog from "./components/resume/ResumeDeleteDialog"
+import { DelJobModalProvider } from "./contexts/DelJobModalContext"
 
 function App() {
 
@@ -14,6 +17,7 @@ function App() {
     <>
       <Toaster 
         id="global" 
+        className="z-9999"
         theme="dark" 
         position="top-center" 
         icons={{
@@ -35,6 +39,7 @@ function App() {
       />
       <Toaster 
         id="closable"
+        className="z-9999"
         closeButton
         theme="dark" 
         position="top-center" 
@@ -55,14 +60,28 @@ function App() {
           }
         }}
       />
-      <AppRoutes />
-      {
-        authStatus === "authenticated" &&
-        <>
-          <AnalysisFormDialog />
-          <SettingsLayout />
-        </>
-      }
+      <DelResumeModalProvider>
+        <DelJobModalProvider>
+          <AppRoutes />
+          {
+            authStatus === "authenticated" &&
+            <>
+              {/* Modal to confirm resume deletion */}
+              <ResumeDeleteDialog />
+              
+              {/* Modal to confirm job description deletion */}
+              <JobDeleteDialog />
+
+              {/* Modal for analysis form */}
+              <AnalysisFormDialog />
+
+              {/* Modal for settings layout */}
+              <SettingsLayout />
+              
+            </>
+          }
+        </DelJobModalProvider>
+      </DelResumeModalProvider>
     </>
   )
 }
