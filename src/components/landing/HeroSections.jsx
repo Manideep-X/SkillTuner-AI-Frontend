@@ -33,8 +33,8 @@ const TopHeroSection = () => {
               <p className="sm:inline hidden"> analyse your resume with the job description to increase your chance of getting selected</p> <p className="sm:hidden inline"> analyse your resume with the job description to increase your chance of selection</p>
             </div>
             <div className="flex flex-wrap sm:flex-row flex-col items-center justify-center gap-3">
-              <Link to="/signin" className="btn btn-accent text-base-100 sm:text-[15px] text-xs sm:px-7 px-9 py-5 font-bold shadow-md/60 hover:shadow-none transition-all text-shadow-none rounded-full">Upload Resume</Link>
-              <a href="#how-to-use-it" className="btn btn-soft border sm:border-accent/50 border-accent/20 text-accent sm:text-[15px] text-xs sm:px-7 px-9 py-5 font-bold shadow-md/60 hover:shadow-none transition-all text-shadow-none rounded-full">See how to use it</a>
+              <Link to="/signin" className="btn btn-accent text-base-100 sm:text-[15px] text-[13px] sm:px-7 px-8 py-5 font-bold shadow-md/60 hover:shadow-none transition-all text-shadow-none rounded-full">Upload Resume</Link>
+              <a href="#how-to-use-it" className="btn btn-soft border sm:border-accent/50 border-accent/20 text-accent sm:text-[15px] text-[13px] sm:px-7 px-8 py-5 font-bold shadow-md/60 hover:shadow-none transition-all text-shadow-none rounded-full">See how to use it</a>
             </div>
           </div>
         </div>
